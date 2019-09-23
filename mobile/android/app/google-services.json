@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "745330547374",
+    "firebase_url": "https://art-of-talk.firebaseio.com",
+    "project_id": "art-of-talk",
+    "storage_bucket": "art-of-talk.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:745330547374:android:0cf0544d43cd6cc2762b3f",
+        "android_client_info": {
+          "package_name": "com.artoftalk.android"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "745330547374-vbtdnb04mhqsbr2fuaks2nhu4v8vag15.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCyKmVBEH4UGvHY1HyMjCLegttrrAlc35U"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "745330547374-vbtdnb04mhqsbr2fuaks2nhu4v8vag15.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

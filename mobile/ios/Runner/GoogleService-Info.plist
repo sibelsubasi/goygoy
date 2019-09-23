@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CLIENT_ID</key>
+	<string>745330547374-lu3r8sbm9h3k6hguiraf9b7vmtrd1g3o.apps.googleusercontent.com</string>
+	<key>REVERSED_CLIENT_ID</key>
+	<string>com.googleusercontent.apps.745330547374-lu3r8sbm9h3k6hguiraf9b7vmtrd1g3o</string>
+	<key>API_KEY</key>
+	<string>AIzaSyDGDO-CbxSmRy9E3_S1N0jzWFvIWh1Smwk</string>
+	<key>GCM_SENDER_ID</key>
+	<string>745330547374</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>com.artoftalk.ios</string>
+	<key>PROJECT_ID</key>
+	<string>art-of-talk</string>
+	<key>STORAGE_BUCKET</key>
+	<string>art-of-talk.appspot.com</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:745330547374:ios:41669556bd101427762b3f</string>
+	<key>DATABASE_URL</key>
+	<string>https://art-of-talk.firebaseio.com</string>
+</dict>
+</plist>
