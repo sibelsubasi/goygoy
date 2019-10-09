@@ -19,7 +19,7 @@ class EditPage extends StatefulWidget {
   final String screenName = "/home/edit";
 
   final File loadedImageFile;
-  final List<Widget> preparedBubble;
+  final List<Map> preparedBubble;
   const EditPage({Key key, this.loadedImageFile, this.preparedBubble}) : super(key: key);
 
   @override
@@ -29,7 +29,7 @@ class EditPage extends StatefulWidget {
 class _EditPageState extends State<EditPage> {
   GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey();
   File _loadedImage;
-  List<Widget> _preparedBubble;
+  List<Map> _preparedBubble;
   bool _isLoading = false;
 
   double width;

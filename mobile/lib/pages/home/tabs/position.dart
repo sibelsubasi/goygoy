@@ -17,7 +17,7 @@ class PositionTab extends StatefulWidget {
   final String screenName = "/home/tabs/position";
 
   final File loadedImageFile;
-  final List<Widget> preparedBubble;
+  final List<Map> preparedBubble;
   const PositionTab({Key key, this.loadedImageFile, this.preparedBubble}) : super(key: key);
 
   @override
@@ -28,9 +28,10 @@ class PositionTabState extends State<PositionTab> {
   final GlobalKey<RefreshIndicatorState> _refreshIndicatorKey = GlobalKey<RefreshIndicatorState>();
   bool _isLoading = false;
   File _loadedImage;
-  List<Widget> _wgPreparedBubble = [];
+  List<Map> _wgPreparedBubble = [];
   double width;
   double height;
+  List<Offset> position = [];
 
 
   @override
@@ -72,6 +73,47 @@ class PositionTabState extends State<PositionTab> {
 
     }
 
+  }
+
+
+  List<Widget> _buildBubbles(){
+
+    List<Widget> _lst = [];
+
+    for(int i = 0; i < _wgPreparedBubble.length; i++){
+
+      position.add(_wgPreparedBubble[i]['position']);
+
+      _lst.add(
+        Positioned(
+          top: position[i].dy,
+          left: position[i].dx,
+          child: Draggable(
+            ignoringFeedbackSemantics: false,
+            feedback: BubbleAccent(
+              message: _wgPreparedBubble[i]['message'],
+              time: '21:00',
+              delivered: true,
+              position: _wgPreparedBubble[i]['isWhiteBox'],
+            ),
+            child: Bubble(
+              message: _wgPreparedBubble[i]['message'],
+              time: '21:00',
+              delivered: true,
+              position: _wgPreparedBubble[i]['isWhiteBox'],
+            ),
+            childWhenDragging: Container(),
+            onDraggableCanceled: (velocity, offset){
+                setState(() {
+                  position[i] = offset;
+                });
+            },
+          ),
+        ),
+      );
+    }
+
+    return _lst;
   }
 
 
@@ -119,12 +161,10 @@ class PositionTabState extends State<PositionTab> {
                   ),
 
                   _wgPreparedBubble!=null ?
-                  Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                  Stack(
                     children: <Widget>[
-                      
-                    ]..addAll(_wgPreparedBubble),
+
+                    ]..addAll(_buildBubbles()),
                   ) : Container(),
 
                 ],

@@ -18,7 +18,7 @@ class BubbleTab extends StatefulWidget {
   final String screenName = "/home/tabs/bubble";
 
   final File loadedImageFile;
-  final List<Widget> preparedBubble;
+  final List<Map> preparedBubble;
   const BubbleTab({Key key, this.loadedImageFile, this.preparedBubble}) : super(key: key);
 
   @override
@@ -33,7 +33,9 @@ class BubbleTabState extends State<BubbleTab> {
 
   String _description = "";
   bool _selectedBubble; //means right green bubble
-  List<Widget> _bubbleList = [];
+  List<Map> _bubbleList = [];
+
+  double countOffset = 50.0;
 
 
 
@@ -42,9 +44,11 @@ class BubbleTabState extends State<BubbleTab> {
     super.initState();
     Analytics.logPageShow(widget.screenName);
 
-    print("******* Welcome to Bubble Page ********");
-    _loadedImage = widget.loadedImageFile;
-    if(widget.preparedBubble != null) _bubbleList = widget.preparedBubble;
+    if (mounted) {
+      print("******* Welcome to Bubble Page ********");
+      _loadedImage = widget.loadedImageFile;
+      if (widget.preparedBubble != null) _bubbleList = widget.preparedBubble;
+    }
   }
 
   @override
@@ -58,7 +62,7 @@ class BubbleTabState extends State<BubbleTab> {
     if (_formKey.currentState.validate() && _selectedBubble != null) {
       print("decription: $_description \nbubble: $_selectedBubble");
 
-      List<Widget> _wgPreparedBubble = _prepareBubble();
+      List<Map> _wgPreparedBubble = _prepareBubble();
 
       Navigator.pushReplacement(context,
           MaterialPageRoute(
@@ -73,16 +77,17 @@ class BubbleTabState extends State<BubbleTab> {
   }
 
 
-  List<Widget> _prepareBubble(){
-    List<Widget> _wg =  [];
+  List<Map> _prepareBubble(){
+    List<Map> _wg =  [];
+
+    countOffset = countOffset + (_bubbleList.length * 50);
 
     _bubbleList.add(
-        Bubble(
-          message: _description,
-          time: '21:00',
-          delivered: true,
-          position: _selectedBubble,
-        )
+        {
+          "message": _description,
+          "isWhiteBox" : _selectedBubble,
+          "position" : Offset(50, countOffset)
+        },
     );
 
     _wg = _bubbleList;
