@@ -16,31 +16,33 @@ class Bubble extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     //position=false is green bubble, means right bubble.
-    final bg = position ? Colors.white : Colors.greenAccent.shade100;
+    final bg = position ? Colors.white : Colors.green;
     final align = position ? CrossAxisAlignment.start : CrossAxisAlignment.end;
     final icon = delivered ? Icons.done_all : Icons.done;
     final radius = position
         ? BorderRadius.only(
-      topRight: Radius.circular(5.0),
-      bottomLeft: Radius.circular(10.0),
-      bottomRight: Radius.circular(5.0),
+      topRight: Radius.circular(18.0),
+      bottomLeft: Radius.circular(0),
+      bottomRight: Radius.circular(18.0),
+      topLeft: Radius.circular(18.0),
     )
         : BorderRadius.only(
-      topLeft: Radius.circular(5.0),
-      bottomLeft: Radius.circular(5.0),
-      bottomRight: Radius.circular(10.0),
+      topLeft: Radius.circular(18.0),
+      bottomLeft: Radius.circular(18.0),
+      bottomRight: Radius.circular(0),
+      topRight: Radius.circular(18.0),
     );
     return Column(
       crossAxisAlignment: align,
       children: <Widget>[
         Container(
           margin: const EdgeInsets.all(3.0),
-          padding: const EdgeInsets.all(8.0),
+          padding: const EdgeInsets.all(10.0),
           decoration: BoxDecoration(
             boxShadow: [
               BoxShadow(
                   blurRadius: .5,
-                  spreadRadius: 1.0,
+                  spreadRadius: 1.5,
                   color: Colors.black.withOpacity(.12))
             ],
             color: bg,
@@ -49,13 +51,13 @@ class Bubble extends StatelessWidget {
           child: Stack(
             children: <Widget>[
               Padding(
-                padding: EdgeInsets.only(right: 48.0),
+                padding: EdgeInsets.only(right: 14.0),
                 child: Text(message, style: TextStyle(
-                  color: Colors.black,
-                  fontSize: 15.0,
+                  color: position ? Colors.black : Colors.white,
+                  fontSize: 14.0,
                 ),),
               ),
-              Positioned(
+              /*Positioned(
                 bottom: 0.0,
                 right: 0.0,
                 child: Row(
@@ -73,7 +75,7 @@ class Bubble extends StatelessWidget {
                     )
                   ],
                 ),
-              )
+              )*/
             ],
           ),
         )
