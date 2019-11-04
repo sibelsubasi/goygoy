@@ -11,6 +11,7 @@ import 'package:mobile/widgets/widgets.dart';
 import 'package:mobile/themes/theme.dart';
 import 'package:mobile/commons/analytics.dart';
 import 'package:mobile/widgets/dialogs.dart';
+import 'package:bubble/bubble.dart';
 
 
 class PositionTab extends StatefulWidget {
@@ -32,6 +33,47 @@ class PositionTabState extends State<PositionTab> {
   double width;
   double height;
   List<Offset> position = [];
+
+  //*** BUBBLE STYLES ***/
+  BubbleStyle bubbleWhite = BubbleStyle(
+    radius: Radius.circular(10.0),
+    nipRadius: 0.5,
+    nip: BubbleNip.leftBottom,
+    color: Colors.white,
+    elevation: 0.8,
+    margin: BubbleEdges.only(top: 0.0, right: 0.0),
+    alignment: Alignment.bottomLeft,
+  );
+
+  BubbleStyle bubbleBlue = BubbleStyle(
+    radius: Radius.circular(10.0),
+    nipRadius: 0.5,
+    nip: BubbleNip.rightBottom,
+    color: Colors.blue,
+    elevation: 0.8,
+    margin: BubbleEdges.only(top: 0.0, left: 0.0),
+    alignment: Alignment.bottomRight,
+  );
+
+  BubbleStyle bubbleWhiteAccent = BubbleStyle(
+    radius: Radius.circular(10.0),
+    nipRadius: 0.5,
+    nip: BubbleNip.leftBottom,
+    color: Colors.white.withOpacity(0.6),
+    elevation: 0.8,
+    margin: BubbleEdges.only(top: 0.0, right: 0.0),
+    alignment: Alignment.bottomLeft,
+  );
+
+  BubbleStyle bubbleBlueAccent = BubbleStyle(
+    radius: Radius.circular(10.0),
+    nipRadius: 0.5,
+    nip: BubbleNip.rightBottom,
+    color: Colors.blue.withOpacity(0.6),
+    elevation: 0.8,
+    margin: BubbleEdges.only(top: 0.0, left: 0.0),
+    alignment: Alignment.bottomRight,
+  );
 
 
   @override
@@ -62,8 +104,8 @@ class PositionTabState extends State<PositionTab> {
       double _imageWidth = _imageDimension.width.toDouble();
       double _imageHeight = _imageDimension.height.toDouble();
 
-      height = MediaQuery.of(context).size.height - 170; //110 is total padding height
-      width = MediaQuery.of(context).size.width - 48; //48 is total padding width
+      height = MediaQuery.of(context).size.height - 170; //170 is total padding height
+      width = MediaQuery.of(context).size.width - 10; //48 is total padding width
 
       setState(() => _isLoading = false);
 
@@ -77,7 +119,7 @@ class PositionTabState extends State<PositionTab> {
 
 
   List<Widget> _buildBubbles(){
-
+    
     List<Widget> _lst = [];
 
     for(int i = 0; i < _wgPreparedBubble.length; i++){
@@ -86,21 +128,22 @@ class PositionTabState extends State<PositionTab> {
 
       _lst.add(
         Positioned(
-          top: position[i].dy,
+          top: position[i].dy-24, //Sürükle bırak sorunu 24px ile çözüldü.
           left: position[i].dx,
           child: Draggable(
             ignoringFeedbackSemantics: false,
-            feedback: BubbleAccent(
-              message: _wgPreparedBubble[i]['message'],
-              time: '21:00',
-              delivered: true,
-              position: _wgPreparedBubble[i]['isWhiteBox'],
+            feedback: Bubble(
+              style: _wgPreparedBubble[i]['isRightBubble'] ? bubbleBlueAccent : bubbleWhiteAccent,
+              child: Text(_wgPreparedBubble[i]['message'], style: TextStyle(
+                  color: _wgPreparedBubble[i]['isRightBubble'] ? Colors.white : Colors.black,
+                  fontSize: 13.0, fontFamily: 'Arial', fontWeight: FontWeight.normal,
+                  decoration: TextDecoration.none),),
             ),
             child: Bubble(
-              message: _wgPreparedBubble[i]['message'],
-              time: '21:00',
-              delivered: true,
-              position: _wgPreparedBubble[i]['isWhiteBox'],
+              style: _wgPreparedBubble[i]['isRightBubble'] ? bubbleBlue : bubbleWhite,
+              child: Text(_wgPreparedBubble[i]['message'], style: TextStyle(
+                  color: _wgPreparedBubble[i]['isRightBubble'] ? Colors.white : Colors.black,
+                  fontSize: 13.0, fontFamily: 'Arial')),
             ),
             childWhenDragging: Container(),
             onDraggableCanceled: (velocity, offset){
@@ -125,7 +168,7 @@ class PositionTabState extends State<PositionTab> {
         child: Stack(
           children: <Widget>[
             Padding(
-              padding: const EdgeInsets.all(8.0),
+              padding: EdgeInsets.all(8.0), //EdgeInsets.all(8.0),
               child: Row(
                 children: <Widget>[
                   Navigator.of(context).canPop()
@@ -141,7 +184,7 @@ class PositionTabState extends State<PositionTab> {
             ),
 
             Container(
-              padding: const EdgeInsets.fromLTRB(24, 56, 24, 30),
+              padding: EdgeInsets.all(0.0),//const EdgeInsets.fromLTRB(24, 56, 24, 30),
               child: Stack(
                 alignment: Alignment.center,
                 children: <Widget>[
@@ -152,7 +195,7 @@ class PositionTabState extends State<PositionTab> {
                       //border: Border.all(color: Config.COLOR_ORANGE),
                       image: _loadedImage != null
                           ? DecorationImage(
-                        fit: BoxFit.fitWidth,
+                        fit: BoxFit.contain,
                         image: FileImage(_loadedImage),
                       )
                           : null,

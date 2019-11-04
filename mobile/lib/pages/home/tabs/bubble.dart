@@ -32,10 +32,12 @@ class BubbleTabState extends State<BubbleTab> {
   File _loadedImage;
 
   String _description = "";
-  bool _selectedBubble; //means right green bubble
+  bool _selectedBubble; //means right blue bubble
   List<Map> _bubbleList = [];
 
   double countOffset = 50.0;
+
+  //*** TODO: SAĞ BALONCUK =  BEYAZ, SOL BALONCUK = MAVİ ***/
 
 
 
@@ -85,7 +87,7 @@ class BubbleTabState extends State<BubbleTab> {
     _bubbleList.add(
         {
           "message": _description,
-          "isWhiteBox" : _selectedBubble,
+          "isRightBubble" : _selectedBubble,
           "position" : Offset(50, countOffset)
         },
     );
@@ -154,11 +156,11 @@ class BubbleTabState extends State<BubbleTab> {
                       children: <Widget>[
                         Radio(
                           activeColor: Config.COLOR_MEDIUM_GREEN,
-                          value: true,
+                          value: false,
                           groupValue: _selectedBubble,
                           onChanged: _handleSelectedBubble,
                         ),
-                        _selectedBubble == true
+                        _selectedBubble == false
                             ? Text("Sol Baloncuk", style: AppTheme.textListDefaultBody(),)
                             : Text("Sol Baloncuk", style: AppTheme.textListDefaultSubBody(),),
                       ],
@@ -171,11 +173,11 @@ class BubbleTabState extends State<BubbleTab> {
                       children: <Widget>[
                         Radio(
                           activeColor: Config.COLOR_MEDIUM_GREEN,
-                          value: false,
+                          value: true,
                           groupValue: _selectedBubble,
                           onChanged: _handleSelectedBubble,
                         ),
-                        _selectedBubble == false
+                        _selectedBubble == true
                             ? Text("Sağ Baloncuk", style: AppTheme.textListDefaultBody(),)
                             : Text("Sağ Baloncuk", style: AppTheme.textListDefaultSubBody(),),
 
