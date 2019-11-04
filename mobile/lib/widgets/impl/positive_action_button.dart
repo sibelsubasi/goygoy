@@ -40,7 +40,7 @@ class ActionButtonWithLightBorder extends StatelessWidget {
       onPressed: onPressed,
       child: child,
       shape: StadiumBorder(),
-      padding: EdgeInsets.all(18),
+      padding: EdgeInsets.all(1),
     );
   }
 }

@@ -2,15 +2,18 @@
 // Proprietary License.
 
 import 'dart:io';
-
+import 'dart:typed_data';
+import 'dart:ui' as ui;
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
 import 'package:mobile/commons/config.dart';
 import 'package:mobile/widgets/widgets.dart';
 import 'package:mobile/themes/theme.dart';
 import 'package:mobile/commons/analytics.dart';
 import 'package:mobile/widgets/dialogs.dart';
+import 'package:mobile/pages/home/edit.dart';
 import 'package:bubble/bubble.dart';
 
 
@@ -19,7 +22,7 @@ class PositionTab extends StatefulWidget {
 
   final File loadedImageFile;
   final List<Map> preparedBubble;
-  const PositionTab({Key key, this.loadedImageFile, this.preparedBubble}) : super(key: key);
+  const PositionTab({Key key, this.loadedImageFile, this.preparedBubble,}) : super(key: key);
 
   @override
   State<StatefulWidget> createState() => PositionTabState();
@@ -27,9 +30,12 @@ class PositionTab extends StatefulWidget {
 
 class PositionTabState extends State<PositionTab> {
   final GlobalKey<RefreshIndicatorState> _refreshIndicatorKey = GlobalKey<RefreshIndicatorState>();
+  final GlobalKey previewContainer = new GlobalKey(); //for screenshot
+
   bool _isLoading = false;
   File _loadedImage;
   List<Map> _wgPreparedBubble = [];
+  List<Widget> _widgetReadyForCapture = [];
   double width;
   double height;
   List<Offset> position = [];
@@ -117,6 +123,31 @@ class PositionTabState extends State<PositionTab> {
 
   }
 
+  void takeScreenShot() async{
+    RenderRepaintBoundary boundary = previewContainer.currentContext.findRenderObject();
+    var image = await boundary.toImage();
+    var byteData = await image.toByteData(format: ui.ImageByteFormat.png);
+    var pngBytes = byteData.buffer.asUint8List();
+
+    print("****** takeScreenShot takeScreenShot *******");
+    print(pngBytes);
+  }
+
+
+  void _submitForShare(){
+
+    /*
+      Navigator.pushReplacement(context,
+          MaterialPageRoute(
+              builder: (context) => SharePage(
+                loadedImageFile: _loadedImage,
+                preparedBubble: _wgPreparedBubble,
+                widgetReadyForCapture: _widgetReadyForCapture,
+              )));
+    */
+
+  }
+
 
   List<Widget> _buildBubbles(){
     
@@ -128,7 +159,7 @@ class PositionTabState extends State<PositionTab> {
 
       _lst.add(
         Positioned(
-          top: position[i].dy-24, //Sürükle bırak sorunu 24px ile çözüldü.
+          top: position[i].dy-28, //Sürükle bırak sorunu 28px ile çözüldü.
           left: position[i].dx,
           child: Draggable(
             ignoringFeedbackSemantics: false,
@@ -156,6 +187,10 @@ class PositionTabState extends State<PositionTab> {
       );
     }
 
+    _widgetReadyForCapture = _lst;
+    print("_widgetReadyForCapture");
+    print(_widgetReadyForCapture);
+
     return _lst;
   }
 
@@ -168,23 +203,44 @@ class PositionTabState extends State<PositionTab> {
         child: Stack(
           children: <Widget>[
             Padding(
-              padding: EdgeInsets.all(8.0), //EdgeInsets.all(8.0),
+              padding: EdgeInsets.all(2.0), //EdgeInsets.all(8.0),
               child: Row(
                 children: <Widget>[
-                  Navigator.of(context).canPop()
-                      ? PlatformIconButton(
-                    onPressed: () => Navigator.of(context).pop(),
-                    androidIcon: Icon(Icons.arrow_back, color: Config.COLOR_MID_GRAY),
-                    iosIcon: Icon(CupertinoIcons.back, color: Config.COLOR_MID_GRAY),
-                  )
-                      : Container(),
-                  Text("", style: AppTheme.textBodyBiggerGray()),
+                  SizedBox(width: 4),
+                  Expanded(
+                    flex: 1,
+                    child: Navigator.of(context).canPop()
+                        ? PlatformIconButton(
+                      onPressed: () => Navigator.of(context).pop(),
+                      androidIcon: Icon(Icons.arrow_back, color: Config.COLOR_MID_GRAY),
+                      iosIcon: Icon(CupertinoIcons.back, color: Config.COLOR_MID_GRAY),
+                    )
+                        : Container(),
+                  ),
+                  Expanded(
+                    flex: 6,
+                    child: SizedBox(width: 0),
+                  ),
+                  Expanded(
+                    flex: 2,
+                    child: GestureDetector(
+                      onTap: () => print("SHARE!"),
+                      child:ActionButtonWithLightBorder(
+                        child: Text("Paylaş!", style: AppTheme.textTabPassive()),
+                        onPressed: () => print("SHARE"),
+                      ),),
+                  ),
+                  SizedBox(width: 8),
+
                 ],
               ),
             ),
 
+      RepaintBoundary(
+        key: previewContainer,
+        child:
             Container(
-              padding: EdgeInsets.all(0.0),//const EdgeInsets.fromLTRB(24, 56, 24, 30),
+              padding: EdgeInsets.only(top: 4.0),//const EdgeInsets.fromLTRB(24, 56, 24, 30),
               child: Stack(
                 alignment: Alignment.center,
                 children: <Widget>[
@@ -214,6 +270,8 @@ class PositionTabState extends State<PositionTab> {
               ),
 
             ),
+          ),
+
             _isLoading ? Dialogs.aotIndicator(context) : Container(),
           ],
         ),

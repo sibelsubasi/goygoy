@@ -19,7 +19,7 @@ class BubbleTab extends StatefulWidget {
 
   final File loadedImageFile;
   final List<Map> preparedBubble;
-  const BubbleTab({Key key, this.loadedImageFile, this.preparedBubble}) : super(key: key);
+  const BubbleTab({Key key, this.loadedImageFile, this.preparedBubble,}) : super(key: key);
 
   @override
   State<StatefulWidget> createState() => BubbleTabState();

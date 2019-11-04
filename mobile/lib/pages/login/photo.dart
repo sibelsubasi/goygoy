@@ -242,7 +242,7 @@ class _PhotoUploadPageState extends State<PhotoUploadPage> {
           child: Stack(
             children: <Widget>[
               Padding(
-                padding: const EdgeInsets.all(8.0),
+                padding: const EdgeInsets.all(2.0),
                 child: Navigator.of(context).canPop()
                     ? PlatformIconButton(
                         onPressed: () => Navigator.of(context).pop(),

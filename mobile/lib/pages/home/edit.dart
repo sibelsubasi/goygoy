@@ -9,7 +9,6 @@ import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
 import 'package:mobile/commons/config.dart';
 import 'package:mobile/pages/home/tabs/bubble.dart';
 import 'package:mobile/pages/home/tabs/position.dart';
-import 'package:mobile/pages/home/tabs/shares.dart';
 import 'package:mobile/widgets/widgets.dart';
 import 'package:mobile/themes/theme.dart';
 import 'package:mobile/commons/analytics.dart';
@@ -20,7 +19,7 @@ class EditPage extends StatefulWidget {
 
   final File loadedImageFile;
   final List<Map> preparedBubble;
-  const EditPage({Key key, this.loadedImageFile, this.preparedBubble}) : super(key: key);
+  const EditPage({Key key, this.loadedImageFile, this.preparedBubble,}) : super(key: key);
 
   @override
   State<StatefulWidget> createState() => _EditPageState();
@@ -46,6 +45,7 @@ class _EditPageState extends State<EditPage> {
 
     _loadedImage = widget.loadedImageFile;
     _preparedBubble = widget.preparedBubble;
+
     print(" ////// WELCOME TO EDIT PAGE ///////");
     print("widget.loadedImageFile: ${widget.loadedImageFile}");
     print("widget.preparedBubble List: ${widget.preparedBubble}");
@@ -77,7 +77,8 @@ class _EditPageState extends State<EditPage> {
       key: _scaffoldKey,
       bottomNavigationBar: PlatformNavBar(
         android: (_) => MaterialNavBarData(type: BottomNavigationBarType.fixed),
-        itemChanged: (index) => setState(() => _currentTabIndex = index),
+        itemChanged: (index) => setState(() =>
+        _currentTabIndex = index),
         //onTap: (index) => setState(() => _currentTabIndex = index),
         currentIndex: _currentTabIndex,
         items: [
@@ -90,11 +91,6 @@ class _EditPageState extends State<EditPage> {
             title: Text("Baloncuk Ekle", style: _currentTabIndex == 1 ? AppTheme.textTabActive() : AppTheme.textTabPassive()),
             activeIcon: Image.asset("assets/img/activeBubble.png"),
             icon: Image.asset("assets/img/passiveBubble.png"),
-          ),
-          BottomNavigationBarItem(
-            title: Text("Paylaş", style: _currentTabIndex == 2 ? AppTheme.textTabActive() : AppTheme.textTabPassive()),
-            activeIcon: Image.asset("assets/img/activeShare.png"),
-            icon: Image.asset("assets/img/passiveShare.png"),
           ),
         ],
       ),
@@ -113,13 +109,6 @@ class _EditPageState extends State<EditPage> {
             child: new TickerMode(
               enabled: _currentTabIndex == 1,
               child: BubbleTab(loadedImageFile: _loadedImage, preparedBubble: _preparedBubble,),
-            ),
-          ),
-          Offstage(
-            offstage: _currentTabIndex != 2,
-            child: new TickerMode(
-              enabled: _currentTabIndex == 2,
-              child: ShareTab(),
             ),
           ),
         ],
