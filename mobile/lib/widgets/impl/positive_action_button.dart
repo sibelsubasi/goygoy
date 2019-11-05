@@ -39,8 +39,9 @@ class ActionButtonWithLightBorder extends StatelessWidget {
       borderSide: BorderSide(color: Config.COLOR_WHITE_DIRTY, style: BorderStyle.solid),
       onPressed: onPressed,
       child: child,
-      shape: StadiumBorder(),
+      shape: OutlineInputBorder(),
       padding: EdgeInsets.all(1),
+      highlightedBorderColor: Config.COLOR_ORANGE,
     );
   }
 }

@@ -1,7 +1,7 @@
-// (C) 2019 Haziran Yazılım. All rights reserved.
-// Proprietary License.
 
+import 'dart:convert';
 import 'dart:io';
+import 'dart:math';
 import 'dart:typed_data';
 import 'dart:ui' as ui;
 import 'package:flutter/material.dart';
@@ -13,8 +13,8 @@ import 'package:mobile/widgets/widgets.dart';
 import 'package:mobile/themes/theme.dart';
 import 'package:mobile/commons/analytics.dart';
 import 'package:mobile/widgets/dialogs.dart';
-import 'package:mobile/pages/home/edit.dart';
 import 'package:bubble/bubble.dart';
+import 'package:path_provider/path_provider.dart';
 
 
 class PositionTab extends StatefulWidget {
@@ -38,7 +38,11 @@ class PositionTabState extends State<PositionTab> {
   List<Widget> _widgetReadyForCapture = [];
   double width;
   double height;
+  double _imageWidth;
+  double _imageHeight;
   List<Offset> position = [];
+
+  File _capturedImage;
 
   //*** BUBBLE STYLES ***/
   BubbleStyle bubbleWhite = BubbleStyle(
@@ -107,8 +111,8 @@ class PositionTabState extends State<PositionTab> {
       setState(() => _isLoading = true);
 
       var _imageDimension = await decodeImageFromList(_loadedImage.readAsBytesSync());
-      double _imageWidth = _imageDimension.width.toDouble();
-      double _imageHeight = _imageDimension.height.toDouble();
+      _imageWidth = _imageDimension.width.toDouble();
+      _imageHeight = _imageDimension.height.toDouble();
 
       height = MediaQuery.of(context).size.height - 170; //170 is total padding height
       width = MediaQuery.of(context).size.width - 10; //48 is total padding width
@@ -123,28 +127,44 @@ class PositionTabState extends State<PositionTab> {
 
   }
 
-  void takeScreenShot() async{
-    RenderRepaintBoundary boundary = previewContainer.currentContext.findRenderObject();
-    var image = await boundary.toImage();
-    var byteData = await image.toByteData(format: ui.ImageByteFormat.png);
-    var pngBytes = byteData.buffer.asUint8List();
+  Future<File> takeScreenShot() async {
 
-    print("****** takeScreenShot takeScreenShot *******");
-    print(pngBytes);
+    setState(() => _isLoading = true);
+    try {
+      print('inside takeScreenShot takeScreenShot');
+
+      RenderRepaintBoundary boundary = previewContainer.currentContext.findRenderObject();
+      ui.Image image = await boundary.toImage(pixelRatio: 1.0);
+      final directory = (await getApplicationDocumentsDirectory()).path;
+      ByteData byteData = await image.toByteData(format: ui.ImageByteFormat.png);
+      Uint8List pngBytes = byteData.buffer.asUint8List();
+      print(pngBytes);
+
+      var _rnd = new Random.secure();
+      File imgFile =new File('$directory/${_rnd.nextInt(99999)}_screenshot.png');
+      imgFile.writeAsBytes(pngBytes);
+
+      print(imgFile);
+      print("BEFORE RETURN!");
+      setState(() => _isLoading = false);
+      return imgFile;
+
+    } catch (e) {
+      print(e);
+      setState(() => _isLoading = false);
+    }
+
   }
 
+  _captureAndPushToSharePage() async{
 
-  void _submitForShare(){
+    print("_CaptureAndPushToSharePage");
 
-    /*
-      Navigator.pushReplacement(context,
-          MaterialPageRoute(
-              builder: (context) => SharePage(
-                loadedImageFile: _loadedImage,
-                preparedBubble: _wgPreparedBubble,
-                widgetReadyForCapture: _widgetReadyForCapture,
-              )));
-    */
+    //_capturedImage = await takeScreenShot();
+
+    Navigator.of(context).canPop()
+        ? Navigator.of(context).pushNamed("/home/share", arguments: await takeScreenShot())
+        : Navigator.of(context).pushReplacementNamed("/home/share", arguments: await takeScreenShot());
 
   }
 
@@ -226,8 +246,15 @@ class PositionTabState extends State<PositionTab> {
                     child: GestureDetector(
                       onTap: () => print("SHARE!"),
                       child:ActionButtonWithLightBorder(
-                        child: Text("Paylaş!", style: AppTheme.textTabPassive()),
-                        onPressed: () => print("SHARE"),
+                        child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              Text("Paylaş", style: AppTheme.textTabPassive()),
+                              Icon(Icons.share, color: Config.COLOR_LIGHT_GRAY, size: 16),
+                            ]
+                        ),
+                        onPressed: () => _captureAndPushToSharePage(),
                       ),),
                   ),
                   SizedBox(width: 8),
@@ -236,41 +263,45 @@ class PositionTabState extends State<PositionTab> {
               ),
             ),
 
-      RepaintBoundary(
-        key: previewContainer,
-        child:
-            Container(
+            !_isLoading ? Container(
+              alignment: Alignment.center,
               padding: EdgeInsets.only(top: 4.0),//const EdgeInsets.fromLTRB(24, 56, 24, 30),
-              child: Stack(
-                alignment: Alignment.center,
-                children: <Widget>[
+              child:
 
-                  Container(
-                    decoration: BoxDecoration(
-                      //borderRadius: BorderRadius.circular(17),
-                      //border: Border.all(color: Config.COLOR_ORANGE),
-                      image: _loadedImage != null
-                          ? DecorationImage(
-                        fit: BoxFit.contain,
-                        image: FileImage(_loadedImage),
-                      )
-                          : null,
+              RepaintBoundary(
+                key: previewContainer,
+                child: Stack(
+                  alignment: Alignment.center,
+                  children: <Widget>[
+
+                    Container(
+                      width: _imageWidth,
+                      height: _imageHeight - (height - _imageHeight)- 28,
+                      decoration: BoxDecoration(
+                        //borderRadius: BorderRadius.circular(17),
+                        //border: Border.all(color: Config.COLOR_ORANGE),
+                        image: _loadedImage != null
+                            ? DecorationImage(
+                          fit: BoxFit.contain,
+                          image: FileImage(_loadedImage),
+                        )
+                            : null,
+                      ),
+                      child: SizedBox(height: _imageHeight, width: _imageWidth),
                     ),
-                    child: SizedBox(height: height, width: width),
-                  ),
 
-                  _wgPreparedBubble!=null ?
-                  Stack(
-                    children: <Widget>[
+                    _wgPreparedBubble!=null ?
+                    Stack(
+                      children: <Widget>[
 
-                    ]..addAll(_buildBubbles()),
-                  ) : Container(),
+                      ]..addAll(_buildBubbles()),
+                    ) : Container(),
 
-                ],
+                  ],
+                ),
               ),
+            ):Container(),
 
-            ),
-          ),
 
             _isLoading ? Dialogs.aotIndicator(context) : Container(),
           ],

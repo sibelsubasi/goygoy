@@ -2,6 +2,7 @@
 // Proprietary License.
 
 import 'package:flutter/material.dart';
+import 'package:mobile/pages/home/share.dart';
 import 'redirect.dart';
 import 'package:mobile/pages/welcome/onboard.dart';
 import 'package:mobile/pages/login/photo.dart';
@@ -17,5 +18,6 @@ final ROUTES = {
   '/welcome/onboard': (RouteSettings s) => OnBoardPage(),
   '/login/photo': (RouteSettings s) => PhotoUploadPage(),
   '/home/edit': (RouteSettings s) => EditPage(loadedImageFile: s.arguments),
+  '/home/share': (RouteSettings s) => SharePage(capturedImageFile: s.arguments),
 };
 
