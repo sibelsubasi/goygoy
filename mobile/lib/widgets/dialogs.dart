@@ -178,10 +178,10 @@ abstract class Dialogs {
         ),
         Center(
           child: Container(
-            decoration: BoxDecoration(color: Colors.grey[50], backgroundBlendMode: BlendMode.colorDodge, borderRadius: BorderRadius.circular(50)),
+            decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(50)),
             child: Image(
-              filterQuality: FilterQuality.high,
-              height: 75.0,
+              width: 52.0,
+              height: 52.0,
               image: AssetImage("assets/img/loader.gif"),
             ),
           ),

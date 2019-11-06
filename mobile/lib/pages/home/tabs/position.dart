@@ -8,6 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:mobile/commons/config.dart';
 import 'package:mobile/widgets/widgets.dart';
 import 'package:mobile/themes/theme.dart';
@@ -15,6 +16,7 @@ import 'package:mobile/commons/analytics.dart';
 import 'package:mobile/widgets/dialogs.dart';
 import 'package:bubble/bubble.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:share_extend/share_extend.dart';
 
 
 class PositionTab extends StatefulWidget {
@@ -95,7 +97,7 @@ class PositionTabState extends State<PositionTab> {
     _loadedImage = widget.loadedImageFile;
     _wgPreparedBubble = widget.preparedBubble;
 
-    print("_wgPreparedBubble List: $_wgPreparedBubble");
+    //print("_wgPreparedBubble List: $_wgPreparedBubble");
     _refresh();
   }
 
@@ -103,6 +105,8 @@ class PositionTabState extends State<PositionTab> {
   void dispose() {
     super.dispose();
   }
+
+
 
   void _refresh() async {
 
@@ -127,31 +131,35 @@ class PositionTabState extends State<PositionTab> {
 
   }
 
-  Future<File> takeScreenShot() async {
+  Future<String> takeScreenShot() async {
 
-    setState(() => _isLoading = true);
+    //setState(() => _isLoading = true);
     try {
       print('inside takeScreenShot takeScreenShot');
 
       RenderRepaintBoundary boundary = previewContainer.currentContext.findRenderObject();
-      ui.Image image = await boundary.toImage(pixelRatio: 1.0);
+      ui.Image image = await boundary.toImage(pixelRatio: 3.0);
       final directory = (await getApplicationDocumentsDirectory()).path;
       ByteData byteData = await image.toByteData(format: ui.ImageByteFormat.png);
       Uint8List pngBytes = byteData.buffer.asUint8List();
       print(pngBytes);
 
       var _rnd = new Random.secure();
-      File imgFile =new File('$directory/${_rnd.nextInt(99999)}_screenshot.png');
+      String imgFilePath = '$directory/${_rnd.nextInt(99999)}_screenshot.png';
+      File imgFile =new File(imgFilePath);
       imgFile.writeAsBytes(pngBytes);
 
       print(imgFile);
+      print(imgFilePath);
       print("BEFORE RETURN!");
-      setState(() => _isLoading = false);
-      return imgFile;
+
+      //setState(() => _isLoading = false);
+      //return imgFile;
+      return imgFilePath;
 
     } catch (e) {
       print(e);
-      setState(() => _isLoading = false);
+      //setState(() => _isLoading = false);
     }
 
   }
@@ -159,12 +167,27 @@ class PositionTabState extends State<PositionTab> {
   _captureAndPushToSharePage() async{
 
     print("_CaptureAndPushToSharePage");
+    setState(() => _isLoading = true);
 
-    //_capturedImage = await takeScreenShot();
+    try {
+      String _filePath;
+      await takeScreenShot().then((result) {
+        _filePath = result;
+        ShareExtend.share(_filePath, "image");
 
+        setState(() => _isLoading = false);
+      });
+
+    } catch (e) {
+      print(e);
+      setState(() => _isLoading = false);
+    }
+
+    /****
     Navigator.of(context).canPop()
         ? Navigator.of(context).pushNamed("/home/share", arguments: await takeScreenShot())
         : Navigator.of(context).pushReplacementNamed("/home/share", arguments: await takeScreenShot());
+    */
 
   }
 
@@ -208,7 +231,6 @@ class PositionTabState extends State<PositionTab> {
     }
 
     _widgetReadyForCapture = _lst;
-    print("_widgetReadyForCapture");
     print(_widgetReadyForCapture);
 
     return _lst;
@@ -250,22 +272,22 @@ class PositionTabState extends State<PositionTab> {
                             mainAxisAlignment: MainAxisAlignment.center,
                             crossAxisAlignment: CrossAxisAlignment.center,
                             children: [
-                              Text("Paylaş", style: AppTheme.textTabPassive()),
-                              Icon(Icons.share, color: Config.COLOR_LIGHT_GRAY, size: 16),
+                              Text("Paylaş ", style: AppTheme.textTabPassive()),
+                              Icon(FontAwesomeIcons.instagram, color: Config.COLOR_LIGHT_GRAY, size: 16),
                             ]
                         ),
                         onPressed: () => _captureAndPushToSharePage(),
                       ),),
                   ),
-                  SizedBox(width: 8),
+                  SizedBox(width: 8,),
 
                 ],
               ),
             ),
 
-            !_isLoading ? Container(
+            Container(
               alignment: Alignment.center,
-              padding: EdgeInsets.only(top: 4.0),//const EdgeInsets.fromLTRB(24, 56, 24, 30),
+              padding: EdgeInsets.only(top: 4),//const EdgeInsets.fromLTRB(24, 56, 24, 30),
               child:
 
               RepaintBoundary(
@@ -275,8 +297,9 @@ class PositionTabState extends State<PositionTab> {
                   children: <Widget>[
 
                     Container(
+                      margin: EdgeInsets.only(top: 10),
                       width: _imageWidth,
-                      height: _imageHeight - (height - _imageHeight)- 28,
+                      height: _imageHeight, //- (height - _imageHeight) - 28,
                       decoration: BoxDecoration(
                         //borderRadius: BorderRadius.circular(17),
                         //border: Border.all(color: Config.COLOR_ORANGE),
@@ -300,7 +323,7 @@ class PositionTabState extends State<PositionTab> {
                   ],
                 ),
               ),
-            ):Container(),
+            ),
 
 
             _isLoading ? Dialogs.aotIndicator(context) : Container(),
