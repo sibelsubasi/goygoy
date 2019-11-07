@@ -1,6 +1,6 @@
 # mobile
 
-Art of Talk Mobile Application
+GoyGoy Mobile Application
 
 ## Getting Started
 
