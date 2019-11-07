@@ -14,23 +14,12 @@ class Config {
 
   static bool IS_TEST_PACKAGE  = false;
   /* -----------  STRINGS ------------------ */
-  static const String STR_APPLICATION_TITLE = "Art of Talk";
+  static const String STR_APPLICATION_TITLE = "GoyGoy";
 
   /* -----------  KEYS ------------------ */
-  static const String KEY_SHARED_PREF_COLOR = "pref-Color";
-  static const String KEY_SHARED_KEY_PREF_LOOK_N_FEEL = "pref-lookAndFeel";
-  static const String KEY_SHARED_SAVED_TOKEN = "pref-savedToken";
-  static const String KEY_SHARED_FIRST_RUN = "pref-firstRun";
   static const String KEY_APPROVED_IMAGE_PATH = "pref-approvedImage";
-  static const String KEY_SHARED_SHORTCUTS = "pref-shortcuts";
-  static const String KEY_FILE_CACHE = "PartneraFileCacheKey";
-  static const String KEY_SEARCH_HISTORY = "pref-searchHistory";
-  static const String KEY_FIREBASE_TOKEN = "pref-firebaseToken";
-  static const String KEY_LAST_UPDATE_SHOWN_ON = "pref-lastUpdateShownOn";
-  static const String KEY_IMPORTANT_ANNOUNCEMENT = "pref-shownAnnouncement";
-  static const String KEY_WORK_MODE = "pref-workMode";
+  static const String KEY_SHARED_FIRST_RUN = "pref-firstRun";
 
-  static const String TOKEN_GLUE = "-||-";
 
   /* -----------  CACHE ------------------ */
   static const Duration CACHE_MAX_TIME = Duration(hours: 1);
