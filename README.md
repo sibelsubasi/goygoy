@@ -1,4 +1,4 @@
-# ART OF TALK
+# GOYGOY
 
 An application that creating chat bubbles for any photos (codded with Dart).
 
