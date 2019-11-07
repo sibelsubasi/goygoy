@@ -229,7 +229,7 @@ class _OnBoardPageSelector extends StatelessWidget {
                   child: PositiveActionButton(
                     onPressed: () {
                       Analytics.logTutorialComplete();
-                      return Navigator.of(context).pushNamed("/login/photo");
+                      return Navigator.of(context).pushReplacementNamed("/login/photo");
                     },
                     child: Text("Hemen Başla!", style: AppTheme.textButtonPositive()),
                   ),

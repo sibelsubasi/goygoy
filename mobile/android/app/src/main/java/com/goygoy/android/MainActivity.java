@@ -1,4 +1,4 @@
-package com.artoftalk.android;
+package com.goygoy.android;
 
 import android.os.Bundle;
 import io.flutter.app.FlutterActivity;

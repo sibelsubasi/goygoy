@@ -1,5 +1,5 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.artoftalk.android">
+    package="com.goygoy.android">
     <!-- Flutter needs it to communicate with the running application
          to allow setting breakpoints, to provide hot reload, etc.
     -->
@@ -9,10 +9,12 @@
      <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
      -->
     <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
 
     <application
             android:name="io.flutter.app.FlutterApplication"
-            android:label="Art of Talk"
+            android:label="GoyGoy"
             android:icon="@mipmap/ic_launcher">
 
 

@@ -50,7 +50,7 @@ android {
     }
 
     defaultConfig {
-        applicationId "com.artoftalk.android"
+        applicationId "com.goygoy.android"
         minSdkVersion 16
         targetSdkVersion 28
         versionCode flutterVersionCode.toInteger()

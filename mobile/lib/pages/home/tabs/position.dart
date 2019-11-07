@@ -40,8 +40,8 @@ class PositionTabState extends State<PositionTab> {
   List<Widget> _widgetReadyForCapture = [];
   double width;
   double height;
-  double _imageWidth;
-  double _imageHeight;
+  double _imageWidth = 32;
+  double _imageHeight = 32;
   List<Offset> position = [];
 
   File _capturedImage;
@@ -111,17 +111,17 @@ class PositionTabState extends State<PositionTab> {
   void _refresh() async {
 
     try {
-
       setState(() => _isLoading = true);
 
-      var _imageDimension = await decodeImageFromList(_loadedImage.readAsBytesSync());
-      _imageWidth = _imageDimension.width.toDouble();
-      _imageHeight = _imageDimension.height.toDouble();
+      await decodeImageFromList(_loadedImage.readAsBytesSync()).then((_imageDimension){
+        _imageWidth = _imageDimension.width.toDouble();
+        _imageHeight = _imageDimension.height.toDouble();
+
+        setState(() => _isLoading = false);
+      });
 
       height = MediaQuery.of(context).size.height - 170; //170 is total padding height
       width = MediaQuery.of(context).size.width - 10; //48 is total padding width
-
-      setState(() => _isLoading = false);
 
     } catch (e) {
       showErrorSheet(context: context, error: e);
@@ -133,7 +133,6 @@ class PositionTabState extends State<PositionTab> {
 
   Future<String> takeScreenShot() async {
 
-    //setState(() => _isLoading = true);
     try {
       print('inside takeScreenShot takeScreenShot');
 
@@ -153,13 +152,12 @@ class PositionTabState extends State<PositionTab> {
       print(imgFilePath);
       print("BEFORE RETURN!");
 
-      //setState(() => _isLoading = false);
       //return imgFile;
       return imgFilePath;
 
     } catch (e) {
       print(e);
-      //setState(() => _isLoading = false);
+      setState(() => _isLoading = false);
     }
 
   }
@@ -167,21 +165,29 @@ class PositionTabState extends State<PositionTab> {
   _captureAndPushToSharePage() async{
 
     print("_CaptureAndPushToSharePage");
+    print("!!!!!loadedImage: $_loadedImage");
+
     setState(() => _isLoading = true);
 
-    try {
-      String _filePath;
-      await takeScreenShot().then((result) {
-        _filePath = result;
-        ShareExtend.share(_filePath, "image");
+      try {
+        String _filePath;
 
+        Future.delayed(const Duration(seconds: 2), () async{
+          await takeScreenShot().then((result) {
+            setState(() {
+              _isLoading = false;
+              _filePath = result;
+              ShareExtend.share(_filePath, "image");
+            });
+          });
+        });
+
+      } catch (e) {
+        print(e);
         setState(() => _isLoading = false);
-      });
+      }
 
-    } catch (e) {
-      print(e);
-      setState(() => _isLoading = false);
-    }
+
 
     /****
     Navigator.of(context).canPop()
@@ -298,8 +304,8 @@ class PositionTabState extends State<PositionTab> {
 
                     Container(
                       margin: EdgeInsets.only(top: 10),
-                      width: _imageWidth,
-                      height: _imageHeight, //- (height - _imageHeight) - 28,
+                      width: width,
+                      height: height, //- (height - _imageHeight) - 28,
                       decoration: BoxDecoration(
                         //borderRadius: BorderRadius.circular(17),
                         //border: Border.all(color: Config.COLOR_ORANGE),
@@ -326,7 +332,7 @@ class PositionTabState extends State<PositionTab> {
             ),
 
 
-            _isLoading ? Dialogs.aotIndicator(context) : Container(),
+            _isLoading || _loadedImage == null ? Dialogs.aotIndicator(context) : Container(),
           ],
         ),
       ),

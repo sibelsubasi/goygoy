@@ -179,10 +179,11 @@ class _PhotoUploadPageState extends State<PhotoUploadPage> {
   }
 
   _uploadAndPushToEditPage() async {
+    setState(() => _isLoading = true);
+
     try {
 
       print(">>>>> GO TO EDIT PAGE WITH");
-
       print(">>>>> LOADED IMAGE:   $_loadedImage");
 
       SharedPreferences preferences = await SharedPreferences.getInstance();
@@ -192,204 +193,211 @@ class _PhotoUploadPageState extends State<PhotoUploadPage> {
       print(">>>>> GET PREFERENCE: $_pfApprovedImagePath");
 
       //Navigator.of(context).pushReplacementNamed("/home/edit", arguments: _loadedImage);
-      Navigator.of(context).canPop()
-          ? Navigator.of(context).pushNamed("/home/edit", arguments: _loadedImage)
-          : Navigator.of(context).pushReplacementNamed("/home/edit", arguments: _loadedImage);
-
-
-
-      /*
-      SharedPreferences preferences = await SharedPreferences.getInstance();
-
-      if (!_imageChanged) {
-        preferences.setBool(Config.KEY_SHARED_HAS_APPROVED_IMAGE, true);
-        return Navigator.of(context).canPop()
-            ? Navigator.of(context).pushNamed("/home/home")
-            : Navigator.of(context).pushReplacementNamed("/home/home");
-      }
-      _loadedImage.statSync();
-      setState(() => _isLoading = true);
-      await PortalService().uploadEmployeePicture(_loadedImage).then((t) {
-        print("in here?");
-        preferences.setBool(Config.KEY_SHARED_HAS_APPROVED_IMAGE, true);
-        Future.delayed(Duration(seconds: 1)).then((_) {
-          return Navigator.of(context).canPop()
-              ? Navigator.of(context).pushNamed("/home/home")
-              : Navigator.of(context).pushReplacementNamed("/home/home");
-        });
-      }).catchError((e) {
-        print("Throwsing");
-        throw e;
-      }).whenComplete(() {
-        setState(() {
-          _hideContinueButton = true;
-          _isLoading = false;
-        });
+      Future.delayed(const Duration(seconds: 2), () async {
+        Navigator.of(context).canPop()
+            ? Navigator.of(context).pushNamed("/home/edit", arguments: _loadedImage)
+            : Navigator.of(context).pushNamed("/home/edit", arguments: _loadedImage);
+          //: Navigator.of(context).pushReplacementNamed("/home/edit", arguments: _loadedImage);
+        setState(() => _isLoading = false);
       });
-      */
+
     } catch (e) {
       showErrorSheet(context: context, error: e);
     }
   }
 
+
+  Future<bool> _onWillPop() {
+    return showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return PlatformAlertDialog(
+          title: Text("Uyarı"),
+          content: Text("Uygulamadan ayrılmak istediğinize emin misiniz?"),
+          actions: <Widget>[
+            // usually buttons at the bottom of the dialog
+            PlatformDialogAction(
+              child: Text("Vazgeç"),
+              onPressed: () {
+                Navigator.of(context).pop(false);
+              },
+            ),
+            PlatformDialogAction(
+              child: Text("Evet"),
+              onPressed: () {
+                Navigator.of(context).pop(true);
+              },
+            ),
+          ],
+        );
+      },
+    ) ??
+        false;
+  }
+
+
   @override
   Widget build(BuildContext context) {
-    return PlatformScaffold(
-      key: _scaffoldKey,
-      body: SafeArea(
-        child: GestureDetector(
-          onTap: () => FocusScope.of(context).requestFocus(new FocusNode()),
-          child: Stack(
-            children: <Widget>[
-              Padding(
-                padding: const EdgeInsets.all(2.0),
-                child: Navigator.of(context).canPop()
-                    ? PlatformIconButton(
-                        onPressed: () => Navigator.of(context).pop(),
-                        androidIcon: Icon(Icons.arrow_back, color: Config.COLOR_MID_GRAY),
-                        iosIcon: Icon(CupertinoIcons.back, color: Config.COLOR_MID_GRAY),
-                      )
-                    : Container(),
-              ),
-              Padding(
-                padding: const EdgeInsets.fromLTRB(24, 75, 24, 50),
-                child: Column(
-                  children: <Widget>[
-                    Row(
-                      children: <Widget>[
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: <Widget>[
-                              Text("Fotoğraf Yükle", style: AppTheme.textPageTitleDarkStyle()),
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
-                    Expanded(
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.center,
+    return WillPopScope(
+        onWillPop: _onWillPop,
+        child: PlatformScaffold(
+        key: _scaffoldKey,
+        body: SafeArea(
+          child: GestureDetector(
+            onTap: () => FocusScope.of(context).requestFocus(new FocusNode()),
+            child: Stack(
+              children: <Widget>[
+                Padding(
+                  padding: const EdgeInsets.all(2.0),
+                  child: Navigator.of(context).canPop()
+                      ? PlatformIconButton(
+                          onPressed: () => Navigator.of(context).pop(),
+                          androidIcon: Icon(Icons.arrow_back, color: Config.COLOR_MID_GRAY),
+                          iosIcon: Icon(CupertinoIcons.back, color: Config.COLOR_MID_GRAY),
+                        )
+                      : Container(),
+                ),
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(24, 75, 24, 50),
+                  child: Column(
+                    children: <Widget>[
+                      Row(
                         children: <Widget>[
-                          Column(
-                            mainAxisSize: MainAxisSize.min,
-                            children: <Widget>[
-                              GestureDetector(
-                                onTap: () => _loadedImage != null
-                                    //? _vision('g')
-                                    ? showCupertinoModalPopup(
-                                        context: context,
-                                        builder: (BuildContext context) => CupertinoActionSheet(
-                                              title: Text('Seçiniz', style: AppTheme.textModalItem()),
-                                              //message: const Text('Your options are'),
-                                              actions: <Widget>[
-                                                CupertinoActionSheetAction(
-                                                  child: Text('Galeriden', style: AppTheme.textBodyDarkGrayBold()),
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: <Widget>[
+                                Text("Fotoğraf Yükle", style: AppTheme.textPageTitleDarkStyle()),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                      Expanded(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: <Widget>[
+                            Column(
+                              mainAxisSize: MainAxisSize.min,
+                              children: <Widget>[
+                                GestureDetector(
+                                  onTap: () => _loadedImage != null
+                                      //? _vision('g')
+                                      ? showCupertinoModalPopup(
+                                          context: context,
+                                          builder: (BuildContext context) => CupertinoActionSheet(
+                                                title: Text('Seçiniz', style: AppTheme.textModalItem()),
+                                                //message: const Text('Your options are'),
+                                                actions: <Widget>[
+                                                  CupertinoActionSheetAction(
+                                                    child: Text('Galeriden', style: AppTheme.textBodyDarkGrayBold()),
+                                                    onPressed: () {
+                                                      _vision('g');
+                                                      Navigator.of(context).pop();
+                                                    },
+                                                  ),
+                                                  CupertinoActionSheetAction(
+                                                    child: Text('Kameradan', style: AppTheme.textBodyDarkGrayBold()),
+                                                    onPressed: () {
+                                                      _vision('c');
+                                                      Navigator.of(context).pop();
+                                                    },
+                                                  )
+                                                ],
+                                                cancelButton: CupertinoActionSheetAction(
+                                                  child: Text('İptal', style: AppTheme.textBodyLight()),
+                                                  isDefaultAction: true,
                                                   onPressed: () {
-                                                    _vision('g');
                                                     Navigator.of(context).pop();
                                                   },
                                                 ),
-                                                CupertinoActionSheetAction(
-                                                  child: Text('Kameradan', style: AppTheme.textBodyDarkGrayBold()),
-                                                  onPressed: () {
-                                                    _vision('c');
-                                                    Navigator.of(context).pop();
-                                                  },
-                                                )
-                                              ],
-                                              cancelButton: CupertinoActionSheetAction(
-                                                child: Text('İptal', style: AppTheme.textBodyLight()),
-                                                isDefaultAction: true,
-                                                onPressed: () {
-                                                  Navigator.of(context).pop();
-                                                },
                                               ),
-                                            ),
-                                      )
-                                    : print('icon button will handle it'),
-                                child: Container(
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(7),
-                                    border: Border.all(color: Config.COLOR_ORANGE_DARK, style: BorderStyle.none),
-                                    image: _loadedImage != null
-                                        ? DecorationImage(
-                                            fit: BoxFit.cover,
-                                            image: FileImage(_loadedImage),
-                                          )
-                                        : null,
-                                  ),
-                                  child: _loadedImage == null
-                                      ? IconButton(
-                                          iconSize: 144,
-                                          icon: Image.asset("assets/img/addSquare.png"),
-                                          //onPressed: () => _vision("g"),
-                                          onPressed: () {
-                                            showCupertinoModalPopup(
-                                              context: context,
-                                              builder: (BuildContext context) => CupertinoActionSheet(
-                                                    title: Text('Seçiniz', style: AppTheme.textModalItem()),
-                                                    //message: const Text('Your options are'),
-                                                    actions: <Widget>[
-                                                      CupertinoActionSheetAction(
-                                                        child: Text('Galeriden', style: AppTheme.textBodyDarkGrayBold(),),
+                                        )
+                                      : print('icon button will handle it'),
+                                  child: Container(
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(7),
+                                      border: Border.all(color: Config.COLOR_ORANGE_DARK, style: BorderStyle.none),
+                                      image: _loadedImage != null
+                                          ? DecorationImage(
+                                              fit: BoxFit.cover,
+                                              image: FileImage(_loadedImage),
+                                            )
+                                          : null,
+                                    ),
+                                    child: _loadedImage == null
+                                        ? IconButton(
+                                            iconSize: 144,
+                                            icon: Image.asset("assets/img/addSquare.png"),
+                                            //onPressed: () => _vision("g"),
+                                            onPressed: () {
+                                              showCupertinoModalPopup(
+                                                context: context,
+                                                builder: (BuildContext context) => CupertinoActionSheet(
+                                                      title: Text('Seçiniz', style: AppTheme.textModalItem()),
+                                                      //message: const Text('Your options are'),
+                                                      actions: <Widget>[
+                                                        CupertinoActionSheetAction(
+                                                          child: Text('Galeriden', style: AppTheme.textBodyDarkGrayBold(),),
+                                                          onPressed: () {
+                                                            _vision('g');
+                                                            Navigator.of(context).pop();
+                                                          },
+                                                        ),
+                                                        CupertinoActionSheetAction(
+                                                          child: Text('Kameradan', style: AppTheme.textBodyDarkGrayBold()),
+                                                          onPressed: () {
+                                                            _vision('c');
+                                                            Navigator.of(context).pop();
+                                                          },
+                                                        )
+                                                      ],
+                                                      cancelButton: CupertinoActionSheetAction(
+                                                        child: Text('İptal', style: AppTheme.textBodyLight()),
+                                                        isDefaultAction: true,
                                                         onPressed: () {
-                                                          _vision('g');
                                                           Navigator.of(context).pop();
                                                         },
                                                       ),
-                                                      CupertinoActionSheetAction(
-                                                        child: Text('Kameradan', style: AppTheme.textBodyDarkGrayBold()),
-                                                        onPressed: () {
-                                                          _vision('c');
-                                                          Navigator.of(context).pop();
-                                                        },
-                                                      )
-                                                    ],
-                                                    cancelButton: CupertinoActionSheetAction(
-                                                      child: Text('İptal', style: AppTheme.textBodyLight()),
-                                                      isDefaultAction: true,
-                                                      onPressed: () {
-                                                        Navigator.of(context).pop();
-                                                      },
                                                     ),
-                                                  ),
-                                            );
-                                          },
-                                        )
-                                      : _loadedImage == null ? SizedBox(height: 144, width: 144):SizedBox(height: _imageHeight, width: _imageWidth),
+                                              );
+                                            },
+                                          )
+                                        : _loadedImage == null ? SizedBox(height: 144, width: 144):SizedBox(height: _imageHeight, width: _imageWidth),
+                                  ),
                                 ),
-                              ),
-                              SizedBox(height: 20),
-                              _loadedImage == null
-                                  ? Text("Fotoğraf yüklemek için artıya basın", style: AppTheme.textHint())
-                                  : Text("Değiştirmek için fotoğrafın üstüne basın.", style: AppTheme.textHint()),
-                              SizedBox(height: 10),
-                            ],
-                          )
-                        ],
+                                SizedBox(height: 20),
+                                _loadedImage == null
+                                    ? Text("Fotoğraf yüklemek için artıya basın", style: AppTheme.textHint())
+                                    : Text("Değiştirmek için fotoğrafın üstüne basın.", style: AppTheme.textHint()),
+                                SizedBox(height: 10),
+                              ],
+                            )
+                          ],
+                        ),
                       ),
-                    ),
-                    _loadedImage != null
-                        ? Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            crossAxisAlignment: CrossAxisAlignment.end,
-                            children: <Widget>[
-                              Expanded(
-                                child: PositiveActionButton(
-                                  child: Text("Devam Et", style: AppTheme.textButtonPositive()),
-                                  onPressed: () => _uploadAndPushToEditPage(),
+                      _loadedImage != null
+                          ? Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              crossAxisAlignment: CrossAxisAlignment.end,
+                              children: <Widget>[
+                                Expanded(
+                                  child: PositiveActionButton(
+                                    child: Text("Devam Et", style: AppTheme.textButtonPositive()),
+                                    onPressed: () => _uploadAndPushToEditPage(),
+                                  ),
                                 ),
-                              ),
-                            ],
-                          )
-                        : Container(),
-                  ],
+                              ],
+                            )
+                          : Container(),
+                    ],
+                  ),
                 ),
-              ),
-              _isLoading ? Dialogs.aotIndicator(context) : Container(),
-            ],
+                _isLoading ? Dialogs.aotIndicator(context) : Container(),
+              ],
+            ),
           ),
         ),
       ),
