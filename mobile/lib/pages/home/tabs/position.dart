@@ -14,7 +14,6 @@ import 'package:mobile/widgets/widgets.dart';
 import 'package:mobile/themes/theme.dart';
 import 'package:mobile/commons/analytics.dart';
 import 'package:mobile/widgets/dialogs.dart';
-import 'package:bubble/bubble.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:share_extend/share_extend.dart';
 
@@ -30,9 +29,10 @@ class PositionTab extends StatefulWidget {
   State<StatefulWidget> createState() => PositionTabState();
 }
 
-class PositionTabState extends State<PositionTab> {
+class PositionTabState extends State<PositionTab> with SingleTickerProviderStateMixin {
   final GlobalKey<RefreshIndicatorState> _refreshIndicatorKey = GlobalKey<RefreshIndicatorState>();
   final GlobalKey previewContainer = new GlobalKey(); //for screenshot
+  AnimationController _controller;
 
   bool _isLoading = false;
   File _loadedImage;
@@ -43,49 +43,15 @@ class PositionTabState extends State<PositionTab> {
   double _imageWidth = 32;
   double _imageHeight = 32;
   List<Offset> position = [];
+  List<bool> _isDeleteBtnEnabled = [];
 
   File _capturedImage;
 
   //*** BUBBLE STYLES ***/
-  BubbleStyle bubbleWhite = BubbleStyle(
-    radius: Radius.circular(10.0),
-    nipRadius: 0.5,
-    nip: BubbleNip.leftBottom,
-    color: Colors.white,
-    elevation: 0.8,
-    margin: BubbleEdges.only(top: 0.0, right: 0.0),
-    alignment: Alignment.bottomLeft,
-  );
-
-  BubbleStyle bubbleBlue = BubbleStyle(
-    radius: Radius.circular(10.0),
-    nipRadius: 0.5,
-    nip: BubbleNip.rightBottom,
-    color: Colors.blue,
-    elevation: 0.8,
-    margin: BubbleEdges.only(top: 0.0, left: 0.0),
-    alignment: Alignment.bottomRight,
-  );
-
-  BubbleStyle bubbleWhiteAccent = BubbleStyle(
-    radius: Radius.circular(10.0),
-    nipRadius: 0.5,
-    nip: BubbleNip.leftBottom,
-    color: Colors.white.withOpacity(0.6),
-    elevation: 0.8,
-    margin: BubbleEdges.only(top: 0.0, right: 0.0),
-    alignment: Alignment.bottomLeft,
-  );
-
-  BubbleStyle bubbleBlueAccent = BubbleStyle(
-    radius: Radius.circular(10.0),
-    nipRadius: 0.5,
-    nip: BubbleNip.rightBottom,
-    color: Colors.blue.withOpacity(0.6),
-    elevation: 0.8,
-    margin: BubbleEdges.only(top: 0.0, left: 0.0),
-    alignment: Alignment.bottomRight,
-  );
+  BubbleStyle bubbleWhite;
+  BubbleStyle bubbleBlue;
+  BubbleStyle bubbleWhiteAccent;
+  BubbleStyle bubbleBlueAccent;
 
 
   @override
@@ -97,12 +63,57 @@ class PositionTabState extends State<PositionTab> {
     _loadedImage = widget.loadedImageFile;
     _wgPreparedBubble = widget.preparedBubble;
 
-    //print("_wgPreparedBubble List: $_wgPreparedBubble");
+    _controller = AnimationController(
+        duration: const Duration(milliseconds: 2000), vsync: this, value: 0.1);
+    _controller.forward();
+
+    //*** BUBBLE STYLES ***/
+    bubbleWhite = BubbleStyle(
+      radius: Radius.circular(10.0),
+      nipRadius: 0.5,
+      nip: BubbleNip.leftBottom,
+      color: Colors.white,
+      elevation: 0.8,
+      margin: BubbleEdges.only(top: 0.0, right: 0.0),
+      alignment: Alignment.bottomLeft,
+    );
+
+    bubbleBlue = BubbleStyle(
+      radius: Radius.circular(10.0),
+      nipRadius: 0.5,
+      nip: BubbleNip.rightBottom,
+      color: Colors.blue,
+      elevation: 0.8,
+      margin: BubbleEdges.only(top: 0.0, left: 0.0),
+      alignment: Alignment.bottomRight,
+    );
+
+    bubbleWhiteAccent = BubbleStyle(
+      radius: Radius.circular(10.0),
+      nipRadius: 0.5,
+      nip: BubbleNip.leftBottom,
+      color: Colors.white.withOpacity(0.6),
+      elevation: 0.8,
+      margin: BubbleEdges.only(top: 0.0, right: 0.0),
+      alignment: Alignment.bottomLeft,
+    );
+
+    bubbleBlueAccent = BubbleStyle(
+      radius: Radius.circular(10.0),
+      nipRadius: 0.5,
+      nip: BubbleNip.rightBottom,
+      color: Colors.blue.withOpacity(0.6),
+      elevation: 0.8,
+      margin: BubbleEdges.only(top: 0.0, left: 0.0),
+      alignment: Alignment.bottomRight,
+    );
+
     _refresh();
   }
 
   @override
   void dispose() {
+    _controller.dispose();
     super.dispose();
   }
 
@@ -197,41 +208,132 @@ class PositionTabState extends State<PositionTab> {
 
   }
 
+  deleteSelectedBubble(index){
+    print("inside");
+    setState(() {
+      _wgPreparedBubble.removeAt(index);
+    });
+  }
+
+  Future<void> showConfirm(index) async {
+    return showDialog<void>(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Uyarı'),
+          content: SingleChildScrollView(
+            child: ListBody(
+              children: <Widget>[
+                Text('Bunu silmek istediğinize '),
+                Text('emin misiniz?'),
+              ],
+            ),
+          ),
+          actions: <Widget>[
+            FlatButton(
+              child: Text('Vazgeç'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+            FlatButton(
+              child: Text('Evet'),
+              onPressed: () {
+                deleteSelectedBubble(index);
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
 
   List<Widget> _buildBubbles(){
-    
+
     List<Widget> _lst = [];
 
     for(int i = 0; i < _wgPreparedBubble.length; i++){
 
+      _isDeleteBtnEnabled.add(false);
       position.add(_wgPreparedBubble[i]['position']);
 
       _lst.add(
         Positioned(
-          top: position[i].dy-28, //Sürükle bırak sorunu 28px ile çözüldü.
+          top: position[i].dy-10, //Sürükle bırak sorunu 10px ile çözüldü.
           left: position[i].dx,
-          child: Draggable(
-            ignoringFeedbackSemantics: false,
-            feedback: Bubble(
-              style: _wgPreparedBubble[i]['isRightBubble'] ? bubbleBlueAccent : bubbleWhiteAccent,
-              child: Text(_wgPreparedBubble[i]['message'], style: TextStyle(
-                  color: _wgPreparedBubble[i]['isRightBubble'] ? Colors.white : Colors.black,
-                  fontSize: 13.0, fontFamily: 'Arial', fontWeight: FontWeight.normal,
-                  decoration: TextDecoration.none),),
+          child: GestureDetector(
+            /*onDoubleTap: (){
+              setState(() {
+                _wgPreparedBubble[i]['isRightBubble'] = !_wgPreparedBubble[i]['isRightBubble'];
+              });
+            },*/
+            onTap: () =>
+                setState(()
+                {
+                  _isDeleteBtnEnabled[i] = !_isDeleteBtnEnabled[i];
+                  print(_isDeleteBtnEnabled[i]);
+                }),
+            child:Draggable(
+              ignoringFeedbackSemantics: false,
+              feedback: Bubble(
+                style: _wgPreparedBubble[i]['isRightBubble'] ? bubbleBlueAccent : bubbleWhiteAccent,
+                child: Text(_wgPreparedBubble[i]['message'], style: TextStyle(
+                    color: _wgPreparedBubble[i]['isRightBubble'] ? Colors.white : Colors.black,
+                    fontSize: 13.5, fontFamily: 'Arial', fontWeight: FontWeight.normal,
+                    decoration: TextDecoration.none),),
+              ),
+              child:  Column(
+                  crossAxisAlignment: _wgPreparedBubble[i]['isRightBubble'] ? CrossAxisAlignment.start : CrossAxisAlignment.end,
+                  children: <Widget>[
+                    Bubble(
+                      style: _wgPreparedBubble[i]['isRightBubble'] ? bubbleBlue : bubbleWhite,
+                      child: Text(_wgPreparedBubble[i]['message'], style: TextStyle(
+                          color: _wgPreparedBubble[i]['isRightBubble'] ? Colors.white : Colors.black,
+                          fontSize: 13.5, fontFamily: 'Arial')),
+                    ),
+
+                    AnimatedSwitcher(
+                      switchInCurve: FlippedCurve(Curves.elasticIn), //ElasticInOutCurve(),
+                      switchOutCurve: FlippedCurve(Curves.elasticInOut),
+                      reverseDuration: Duration(milliseconds: 500),
+                      duration: const Duration(milliseconds: 500),
+                      transitionBuilder: (Widget child, Animation<double> animation) {
+                        return ScaleTransition(child: child, scale: animation);
+                      },
+                      child:
+                        _isDeleteBtnEnabled[i]?
+                        GestureDetector(
+                            onTap: () {
+                              showConfirm(i);
+                            },
+                            child: LimitedBox(
+                                maxWidth: 32,
+                                maxHeight: 32,
+                                child: Container(
+                                  decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.all(Radius.circular(16)),
+                                      color: Colors.red,
+                                  ),
+                                  child: Icon(Icons.clear, color: Colors.white, size: 21,),
+                                )
+                            )):SizedBox(),
+                          ),
+
+                  ],
+                ),
+
+              childWhenDragging: SizedBox(),
+              onDraggableCanceled: (velocity, offset){
+                  setState(() {
+                    position[i] = offset;
+                  });
+              },
             ),
-            child: Bubble(
-              style: _wgPreparedBubble[i]['isRightBubble'] ? bubbleBlue : bubbleWhite,
-              child: Text(_wgPreparedBubble[i]['message'], style: TextStyle(
-                  color: _wgPreparedBubble[i]['isRightBubble'] ? Colors.white : Colors.black,
-                  fontSize: 13.0, fontFamily: 'Arial')),
-            ),
-            childWhenDragging: Container(),
-            onDraggableCanceled: (velocity, offset){
-                setState(() {
-                  position[i] = offset;
-                });
-            },
           ),
+
         ),
       );
     }
@@ -250,50 +352,50 @@ class PositionTabState extends State<PositionTab> {
         onTap: () => FocusScope.of(context).requestFocus(new FocusNode()),
         child: Stack(
           children: <Widget>[
-            Padding(
-              padding: EdgeInsets.all(2.0), //EdgeInsets.all(8.0),
+            Container(
+              padding: EdgeInsets.fromLTRB(4.0, 12.0, 8.0, 0.0), //EdgeInsets.all(8.0),
               child: Row(
                 children: <Widget>[
-                  SizedBox(width: 4),
                   Expanded(
                     flex: 1,
                     child: Navigator.of(context).canPop()
                         ? PlatformIconButton(
                       onPressed: () => Navigator.of(context).pop(),
-                      androidIcon: Icon(Icons.arrow_back, color: Config.COLOR_MID_GRAY),
+                      androidIcon: Icon(Icons.arrow_back, color: Config.COLOR_MID_GRAY, size: 28,),
                       iosIcon: Icon(CupertinoIcons.back, color: Config.COLOR_MID_GRAY),
                     )
                         : Container(),
                   ),
                   Expanded(
-                    flex: 6,
+                    flex: 4,
                     child: SizedBox(width: 0),
                   ),
                   Expanded(
                     flex: 2,
                     child: GestureDetector(
                       onTap: () => print("SHARE!"),
-                      child:ActionButtonWithLightBorder(
+                      child:ActionButtonSmall(
+                        buttonColor: Config.COLOR_ORANGE_DARK,
+                        padding: EdgeInsets.all(4.0),
                         child: Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             crossAxisAlignment: CrossAxisAlignment.center,
                             children: [
-                              Text("Paylaş ", style: AppTheme.textTabPassive()),
-                              Icon(FontAwesomeIcons.instagram, color: Config.COLOR_LIGHT_GRAY, size: 16),
+                              Text("Paylaş ", style: AppTheme.textButtonPositive()),
+                              Icon(FontAwesomeIcons.instagram, color: Config.COLOR_WHITE, size: 16),
                             ]
                         ),
                         onPressed: () => _captureAndPushToSharePage(),
-                      ),),
+                      ),
+                    ),
                   ),
-                  SizedBox(width: 8,),
-
                 ],
               ),
             ),
 
             Container(
               alignment: Alignment.center,
-              padding: EdgeInsets.only(top: 4),//const EdgeInsets.fromLTRB(24, 56, 24, 30),
+              margin: EdgeInsets.only(top: 10),//const EdgeInsets.fromLTRB(24, 56, 24, 30),
               child:
 
               RepaintBoundary(
@@ -303,7 +405,6 @@ class PositionTabState extends State<PositionTab> {
                   children: <Widget>[
 
                     Container(
-                      margin: EdgeInsets.only(top: 10),
                       width: width,
                       height: height, //- (height - _imageHeight) - 28,
                       decoration: BoxDecoration(
@@ -326,6 +427,14 @@ class PositionTabState extends State<PositionTab> {
                       ]..addAll(_buildBubbles()),
                     ) : Container(),
 
+                    !_isLoading?
+                    WaterMark(
+                      rotate: 3,
+                      height: _imageHeight >= height ?
+                           _imageHeight == height ? height - ((height/_imageHeight)*100) +68 : height - ((height/_imageHeight)*100) -48
+                          :_imageHeight - ((_imageHeight/height)*100) -48,
+                      width: _imageWidth, alignment: Alignment.bottomRight,)
+                        :SizedBox(),
                   ],
                 ),
               ),

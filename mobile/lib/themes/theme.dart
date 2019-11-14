@@ -187,7 +187,7 @@ abstract class AppTheme {
     return TextStyle(
       fontFamily: "Rubik",
       color: Config.COLOR_WHITE,
-      fontSize: 16,
+      fontSize: 14,
     );
   }
 

@@ -126,7 +126,9 @@ abstract class Dialogs {
     );
   }
 
-  static void confirm(BuildContext context, String title, String message, Function then) {
+
+
+  static Future<void> confirm(BuildContext context, String title, String message, Function _then) async{
     showDialog(
       context: context,
       barrierDismissible: false,
@@ -139,14 +141,15 @@ abstract class Dialogs {
             PlatformDialogAction(
               child: Text("Vazgeç"),
               onPressed: () {
-                Navigator.of(context).pop();
+                Navigator.of(context).pop("CANCEL");
               },
             ),
             PlatformDialogAction(
               child: Text("Tamam"),
               onPressed: () {
-                Navigator.of(context).pop();
-                then();
+                print("ALALALALALALA");
+                Navigator.of(context).pop("ACCEPT");
+                _then();
               },
             ),
           ],

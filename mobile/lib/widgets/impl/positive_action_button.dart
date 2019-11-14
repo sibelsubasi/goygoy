@@ -50,8 +50,9 @@ class ActionButtonSmall extends StatelessWidget {
   final VoidCallback onPressed;
   final Widget child;
   final Color buttonColor;
+  final EdgeInsetsGeometry padding;
 
-  const ActionButtonSmall({Key key, this.onPressed, this.child, this.buttonColor}) : super(key: key);
+  const ActionButtonSmall({Key key, this.onPressed, this.child, this.buttonColor, this.padding}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -60,7 +61,7 @@ class ActionButtonSmall extends StatelessWidget {
       onPressed: onPressed,
       child: child,
       shape: StadiumBorder(),
-      padding: EdgeInsets.all(14),
+      padding: padding==null?EdgeInsets.all(14.0):padding,
       color: buttonColor,
     );
   }
