@@ -32,6 +32,7 @@ class PositionTab extends StatefulWidget {
 class PositionTabState extends State<PositionTab> with SingleTickerProviderStateMixin {
   final GlobalKey<RefreshIndicatorState> _refreshIndicatorKey = GlobalKey<RefreshIndicatorState>();
   final GlobalKey previewContainer = new GlobalKey(); //for screenshot
+  final GlobalKey imageContainer = new GlobalKey(); //for image container
   AnimationController _controller;
 
   bool _isLoading = false;
@@ -44,6 +45,7 @@ class PositionTabState extends State<PositionTab> with SingleTickerProviderState
   double _imageHeight = 32;
   List<Offset> position = [];
   List<bool> _isDeleteBtnEnabled = [];
+  Size _sizeOfContainer;
 
   File _capturedImage;
 
@@ -109,6 +111,7 @@ class PositionTabState extends State<PositionTab> with SingleTickerProviderState
     );
 
     _refresh();
+    WidgetsBinding.instance.addPostFrameCallback(_afterLayout);
   }
 
   @override
@@ -117,7 +120,9 @@ class PositionTabState extends State<PositionTab> with SingleTickerProviderState
     super.dispose();
   }
 
-
+  _afterLayout(_) {
+    getSizes();
+  }
 
   void _refresh() async {
 
@@ -127,6 +132,8 @@ class PositionTabState extends State<PositionTab> with SingleTickerProviderState
       await decodeImageFromList(_loadedImage.readAsBytesSync()).then((_imageDimension){
         _imageWidth = _imageDimension.width.toDouble();
         _imageHeight = _imageDimension.height.toDouble();
+
+        print("HEIGHT HEIGHT HEIGHT $_imageHeight");
 
         setState(() => _isLoading = false);
       });
@@ -139,7 +146,30 @@ class PositionTabState extends State<PositionTab> with SingleTickerProviderState
       setState(() => _isLoading = false);
 
     }
+  }
 
+  void _reloadImageAfterShare() async{
+    try {
+      await decodeImageFromList(_loadedImage.readAsBytesSync()).then((_imageDimension){
+        _imageWidth = _imageDimension.width.toDouble();
+        _imageHeight = _imageDimension.height.toDouble();
+
+        setState(() => _isLoading = false);
+      });
+
+      height = MediaQuery.of(context).size.height - 170; //170 is total padding height
+      width = MediaQuery.of(context).size.width - 10; //48 is total padding width
+
+    } catch (e) {
+      showErrorSheet(context: context, error: e);
+    }
+  }
+
+  void getSizes() {
+    final RenderBox renderBoxContainer = previewContainer.currentContext.findRenderObject();
+    final sizeOfContainer = renderBoxContainer.size;
+    _sizeOfContainer = sizeOfContainer;
+    print("SIZE of ScreenShot Container: $sizeOfContainer");
   }
 
   Future<String> takeScreenShot() async {
@@ -148,7 +178,7 @@ class PositionTabState extends State<PositionTab> with SingleTickerProviderState
       print('inside takeScreenShot takeScreenShot');
 
       RenderRepaintBoundary boundary = previewContainer.currentContext.findRenderObject();
-      ui.Image image = await boundary.toImage(pixelRatio: 3.0);
+      ui.Image image = await boundary.toImage(pixelRatio: 4.0);
       final directory = (await getApplicationDocumentsDirectory()).path;
       ByteData byteData = await image.toByteData(format: ui.ImageByteFormat.png);
       Uint8List pngBytes = byteData.buffer.asUint8List();
@@ -178,12 +208,14 @@ class PositionTabState extends State<PositionTab> with SingleTickerProviderState
     print("_CaptureAndPushToSharePage");
     print("!!!!!loadedImage: $_loadedImage");
 
+    //_reloadImageAfterShare();
+
     setState(() => _isLoading = true);
 
       try {
         String _filePath;
 
-        Future.delayed(const Duration(seconds: 2), () async{
+        Future.delayed(const Duration(seconds: 1), () async{
           await takeScreenShot().then((result) {
             setState(() {
               _isLoading = false;
@@ -191,6 +223,10 @@ class PositionTabState extends State<PositionTab> with SingleTickerProviderState
               ShareExtend.share(_filePath, "image");
             });
           });
+        });
+
+        Future.delayed(const Duration(seconds: 3), () async{
+          _refresh();
         });
 
       } catch (e) {
@@ -373,7 +409,7 @@ class PositionTabState extends State<PositionTab> with SingleTickerProviderState
                   Expanded(
                     flex: 2,
                     child: GestureDetector(
-                      onTap: () => print("SHARE!"),
+                      onTap: () => print("Share onTap!"),
                       child:ActionButtonSmall(
                         buttonColor: Config.COLOR_ORANGE_DARK,
                         padding: EdgeInsets.all(4.0),
@@ -385,7 +421,9 @@ class PositionTabState extends State<PositionTab> with SingleTickerProviderState
                               Icon(FontAwesomeIcons.instagram, color: Config.COLOR_WHITE, size: 16),
                             ]
                         ),
-                        onPressed: () => _captureAndPushToSharePage(),
+                        onPressed: () {
+                          _captureAndPushToSharePage();
+                        }
                       ),
                     ),
                   ),
@@ -404,21 +442,24 @@ class PositionTabState extends State<PositionTab> with SingleTickerProviderState
                   alignment: Alignment.center,
                   children: <Widget>[
 
-                    Container(
-                      width: width,
-                      height: height, //- (height - _imageHeight) - 28,
+
+                  SizedBox(
+                    height: _imageWidth >= _imageHeight ? _imageHeight / 1.42 : _imageHeight / 1.06,
+                    width: _imageWidth,
+                    child: Container(
                       decoration: BoxDecoration(
-                        //borderRadius: BorderRadius.circular(17),
-                        //border: Border.all(color: Config.COLOR_ORANGE),
-                        image: _loadedImage != null
-                            ? DecorationImage(
+                        image: _loadedImage != null ?
+                        DecorationImage(
                           fit: BoxFit.contain,
                           image: FileImage(_loadedImage),
-                        )
-                            : null,
+                        ):DecorationImage(
+                          fit: BoxFit.contain,
+                          image: AssetImage('img/errorIcon.png'),
+                        ),
                       ),
-                      child: SizedBox(height: _imageHeight, width: _imageWidth),
                     ),
+                  ),
+
 
                     _wgPreparedBubble!=null ?
                     Stack(
@@ -427,14 +468,15 @@ class PositionTabState extends State<PositionTab> with SingleTickerProviderState
                       ]..addAll(_buildBubbles()),
                     ) : Container(),
 
-                    !_isLoading?
-                    WaterMark(
-                      rotate: 3,
-                      height: _imageHeight >= height ?
-                           _imageHeight == height ? height - ((height/_imageHeight)*100) +68 : height - ((height/_imageHeight)*100) -48
-                          :_imageHeight - ((_imageHeight/height)*100) -48,
-                      width: _imageWidth, alignment: Alignment.bottomRight,)
-                        :SizedBox(),
+
+                        WaterMark(
+                          rotate: 3,
+                          height: _imageWidth >= _imageHeight ? _imageHeight / 1.42 : _imageHeight / 1.06,
+                          width: _imageWidth,
+                          alignment: Alignment.bottomRight,
+                        ),
+
+
                   ],
                 ),
               ),
