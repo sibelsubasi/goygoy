@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
 import 'package:mobile/commons/analytics.dart';
 import 'package:mobile/themes/theme.dart';
+import 'package:mobile/utils/fcm.dart';
 import 'package:mobile/widgets/widgets.dart';
 import 'package:mobile/clippers/absolute_shape.dart';
 import 'package:mobile/commons/config.dart';
@@ -25,6 +26,8 @@ class _OnBoardPageState extends State<OnBoardPage> {
     super.initState();
     Analytics.logPageShow(widget.screenName);
     Analytics.logTutorialBegin();
+
+    FCM().register(context);
   }
 
   @override

@@ -1,7 +1,9 @@
 // (C) 2019 Haziran Yazılım. All rights reserved.
 // Proprietary License.
+import 'dart:async';
 import 'dart:io' show Platform;
 
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
 import 'package:mobile/commons/config.dart';
@@ -13,10 +15,11 @@ import 'package:firebase_analytics/observer.dart';
 import 'package:firebase_performance/firebase_performance.dart';
 import 'package:mobile/commons/analytics.dart';
 import 'package:package_info/package_info.dart';
-
 import 'package:mobile/pages/etc/unknown_route.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:unique_identifier/unique_identifier.dart';
+
+
 
 class AOTMobileApp extends StatelessWidget {
 
@@ -24,6 +27,8 @@ class AOTMobileApp extends StatelessWidget {
   static FirebaseAnalyticsObserver observer = FirebaseAnalyticsObserver(analytics: analytics);
   static FirebasePerformance performance = FirebasePerformance.instance;
   bool _testAlertShowed = false;
+
+  final FirebaseMessaging _firebaseMessaging = FirebaseMessaging();
 
   AOTMobileApp() {
     _changePlatform();
@@ -56,6 +61,7 @@ class AOTMobileApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+
     return PlatformApp(
       title: Config.STR_APPLICATION_TITLE,
       supportedLocales: [
@@ -86,3 +92,7 @@ class AOTMobileApp extends StatelessWidget {
     );
   }
 }
+
+
+
+

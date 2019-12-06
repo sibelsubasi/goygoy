@@ -13,6 +13,7 @@ class Config {
 
 
   static bool IS_TEST_PACKAGE  = false;
+
   /* -----------  STRINGS ------------------ */
   static const String STR_APPLICATION_TITLE = "GoyGoy";
 

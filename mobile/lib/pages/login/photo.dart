@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
 import 'package:mobile/commons/config.dart';
+import 'package:mobile/utils/fcm.dart';
 import 'package:mobile/widgets/widgets.dart';
 import 'package:mobile/themes/theme.dart';
 import 'package:mobile/commons/analytics.dart';
@@ -17,6 +18,7 @@ import 'package:path_provider/path_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:permission/permission.dart';
 import 'package:mobile/utils/permission_operations.dart';
+
 
 
 class PhotoUploadPage extends StatefulWidget {
@@ -38,11 +40,15 @@ class _PhotoUploadPageState extends State<PhotoUploadPage> {
   void initState() {
     super.initState();
     Analytics.logPageShow(widget.screenName);
+
+    FCM().register(context);
     _refresh();
   }
 
   @override
   void dispose() {
+
+    AdmobAd().disposeInterstitialAd();
     super.dispose();
   }
 
@@ -65,14 +71,16 @@ class _PhotoUploadPageState extends State<PhotoUploadPage> {
     File croppedFile;
     if (image.path != null) {
       croppedFile = await ImageCropper.cropImage(
-        toolbarTitle: "Ölçekleyin",
+        //androidUiSettings: AndroidUiSettings(toolbarTitle: "Ölçekleyin",toolbarColor: Config.COLOR_GRADIENT_BEGIN,toolbarWidgetColor: Colors.white),
+        toolbarTitle: "Düzenleyin",
         toolbarColor: Config.COLOR_GRADIENT_BEGIN,
+        toolbarWidgetColor: Colors.white,
         sourcePath: image.path,
-        //ratioX: 3.0,
-        //ratioY: 3.0,
+        //aspectRatio: CropAspectRatio(ratioX: 3.0, ratioY: 3.0),
         maxWidth: 512,
         maxHeight: 512,
-        toolbarWidgetColor: Colors.white,
+        //iosUiSettings: IOSUiSettings(doneButtonTitle: "Tamam", cancelButtonTitle: "İptal"),
+        //compressQuality: 100,
       );
     } else {
       croppedFile = image;
@@ -386,7 +394,11 @@ class _PhotoUploadPageState extends State<PhotoUploadPage> {
                                 Expanded(
                                   child: PositiveActionButton(
                                     child: Text("Devam Et", style: AppTheme.textButtonPositive()),
-                                    onPressed: () => _uploadAndPushToEditPage(),
+                                    onPressed: () {
+                                      AdmobAd().showInterstitialAd();
+                                      AdmobAd().isAdLoaded ? _uploadAndPushToEditPage() : _uploadAndPushToEditPage(); //print("waiting...");
+
+                                    },
                                   ),
                                 ),
                               ],

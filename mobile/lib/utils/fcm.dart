@@ -12,16 +12,14 @@ class RouteItem {
 class FCM {
 
   RouteItem getRouteWithParamsFromMessage(Map message) {
-    String pType = message['p_type'].toString();
-    String pId = message['p_id'].toString();
+    String page = message['page'].toString();
+    String id = message['id'].toString();
 
-    switch (pType) {
-      case 'HRSSA': //absence
-        return RouteItem("/approval/absence/details", {'itemType': "HRSSA", 'itemKey': pId});
-      case 'APEXP': //expense
-        return RouteItem("/approval/expense/details", {'itemType': "APEXP", 'itemKey': pId});
-      case 'EOD': //dayclose
-        return  RouteItem("/approval/dayclosing/details", {'itemType': "APEXP", 'itemKey': pId});
+    switch (page) {
+      case 'ONBOARD': //onboard page
+        return RouteItem("/welcome/onboard", {'page': page, 'id': id});
+      case 'PHOTO': //photo page
+        return RouteItem("/login/photo", {'page': page, 'id': id});
       default:
         return RouteItem(null, null);
     }
@@ -31,6 +29,7 @@ class FCM {
     final FirebaseMessaging _firebaseMessaging = FirebaseMessaging();
     _firebaseMessaging.setAutoInitEnabled(true);
     _firebaseMessaging.configure(
+
       //{
       //  notification: {
       //    body: Emre Uğraşkan 19.11.2018 08:00 - 20.11.2018 08:00 tarihleri arasında Babalık İzni kullanmak istiyor.,
@@ -41,10 +40,12 @@ class FCM {
       //    p_type: 1585
       //  }
       //}
+
       onMessage: (Map<String, dynamic> message) async {
         print('on message $message');
         RouteItem r = getRouteWithParamsFromMessage(message['data']);
         Dialogs.banner(context, message['notification']['title'], message['notification']['body'], r.route, r.params);
+        //Dialogs.banner(context, message['notification']['title'], message['notification']['body'], null, null);
       },
 
       //{

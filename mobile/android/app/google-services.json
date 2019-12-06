@@ -1,34 +1,34 @@
 {
   "project_info": {
-    "project_number": "745330547374",
-    "firebase_url": "https://art-of-talk.firebaseio.com",
-    "project_id": "art-of-talk",
-    "storage_bucket": "art-of-talk.appspot.com"
+    "project_number": "246006420532",
+    "firebase_url": "https://goy-goy-app.firebaseio.com",
+    "project_id": "goy-goy-app",
+    "storage_bucket": "goy-goy-app.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:745330547374:android:0cf0544d43cd6cc2762b3f",
+        "mobilesdk_app_id": "1:246006420532:android:2bd94b299bd0c532e36661",
         "android_client_info": {
           "package_name": "com.goygoy.android"
         }
       },
       "oauth_client": [
         {
-          "client_id": "745330547374-vbtdnb04mhqsbr2fuaks2nhu4v8vag15.apps.googleusercontent.com",
+          "client_id": "246006420532-jsve6ipncrpqatfap3mq1jo8ahq5432h.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyCyKmVBEH4UGvHY1HyMjCLegttrrAlc35U"
+          "current_key": "AIzaSyDpTH6WaXuaBU3BgKcCKzKxoo84SUJLZio"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "745330547374-vbtdnb04mhqsbr2fuaks2nhu4v8vag15.apps.googleusercontent.com",
+              "client_id": "246006420532-jsve6ipncrpqatfap3mq1jo8ahq5432h.apps.googleusercontent.com",
               "client_type": 3
             }
           ]

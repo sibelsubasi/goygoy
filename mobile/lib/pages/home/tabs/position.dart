@@ -35,6 +35,7 @@ class PositionTabState extends State<PositionTab> with SingleTickerProviderState
   final GlobalKey imageContainer = new GlobalKey(); //for image container
   AnimationController _controller;
 
+
   bool _isLoading = false;
   File _loadedImage;
   List<Map> _wgPreparedBubble = [];
@@ -117,6 +118,8 @@ class PositionTabState extends State<PositionTab> with SingleTickerProviderState
   @override
   void dispose() {
     _controller.dispose();
+
+    AdmobAd().disposeInterstitialAd();
     super.dispose();
   }
 
@@ -178,7 +181,7 @@ class PositionTabState extends State<PositionTab> with SingleTickerProviderState
       print('inside takeScreenShot takeScreenShot');
 
       RenderRepaintBoundary boundary = previewContainer.currentContext.findRenderObject();
-      ui.Image image = await boundary.toImage(pixelRatio: 4.0);
+      ui.Image image = await boundary.toImage(pixelRatio: 5.0);
       final directory = (await getApplicationDocumentsDirectory()).path;
       ByteData byteData = await image.toByteData(format: ui.ImageByteFormat.png);
       Uint8List pngBytes = byteData.buffer.asUint8List();
@@ -334,7 +337,7 @@ class PositionTabState extends State<PositionTab> with SingleTickerProviderState
                     AnimatedSwitcher(
                       switchInCurve: FlippedCurve(Curves.elasticIn), //ElasticInOutCurve(),
                       switchOutCurve: FlippedCurve(Curves.elasticInOut),
-                      reverseDuration: Duration(milliseconds: 500),
+                      //reverseDuration: Duration(milliseconds: 500),
                       duration: const Duration(milliseconds: 500),
                       transitionBuilder: (Widget child, Animation<double> animation) {
                         return ScaleTransition(child: child, scale: animation);
@@ -422,6 +425,8 @@ class PositionTabState extends State<PositionTab> with SingleTickerProviderState
                             ]
                         ),
                         onPressed: () {
+                          AdmobAd().showInterstitialAd();
+                          //AdmobAd().isAdLoaded ? _captureAndPushToSharePage() : _captureAndPushToSharePage(); //print("waiting...");
                           _captureAndPushToSharePage();
                         }
                       ),
@@ -476,6 +481,15 @@ class PositionTabState extends State<PositionTab> with SingleTickerProviderState
                           alignment: Alignment.bottomRight,
                         ),
 
+
+                    /*
+                    RaisedButton(
+                      child: Text("Click on Interstitial Ad"),
+                      onPressed: (){
+                        createInterstitialAd()..load()..show();
+                      },
+                    ),
+                    */
 
                   ],
                 ),

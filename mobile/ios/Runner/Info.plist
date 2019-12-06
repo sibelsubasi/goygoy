@@ -55,5 +55,7 @@
 	<true/>
 	<key>NSPhotoLibraryAddUsageDescription</key>
     <string>Fotograf kutuphanenize kaydedebilir miyiz?</string>
+    <key>GADApplicationIdentifier</key>
+    <string>ca-app-pub-7026258186722315~8694725930</string>
 </dict>
 </plist>
