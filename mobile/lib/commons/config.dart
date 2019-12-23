@@ -20,6 +20,7 @@ class Config {
   /* -----------  KEYS ------------------ */
   static const String KEY_APPROVED_IMAGE_PATH = "pref-approvedImage";
   static const String KEY_SHARED_FIRST_RUN = "pref-firstRun";
+  static const String KEY_SHOW_INFO_FIRST = "pref-firstShow";
 
 
   /* -----------  CACHE ------------------ */

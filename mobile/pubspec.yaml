@@ -22,7 +22,7 @@ dependencies:
   firebase_ml_vision: ^0.6.0+2
   firebase_messaging: ^4.0.0+1
   firebase_admob: ^0.5.3
-  image_picker: 0.6.0+17
+  image_picker: 0.6.1
   image_cropper: 1.0.2
   crypto: ^2.0.6
   unique_identifier: ^0.0.3

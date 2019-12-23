@@ -6,6 +6,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
+import 'package:mobile/commons/addCommons.dart';
 import 'package:mobile/commons/config.dart';
 import 'package:mobile/pages/home/tabs/bubble.dart';
 import 'package:mobile/pages/home/tabs/position.dart';
@@ -49,12 +50,22 @@ class _EditPageState extends State<EditPage> {
     print(" ////// WELCOME TO EDIT PAGE ///////");
     print("widget.loadedImageFile: ${widget.loadedImageFile}");
     print("widget.preparedBubble List: ${widget.preparedBubble}");
+
+    if (!AddCommon.isAdShown && AddCommon.calledDisposed) {
+      AddCommon.isAdShown = true;
+      AddCommon.calledDisposed = false;
+    }
+
+    !AddCommon.calledDisposed ? AdmobAd().disposeBannerAd() : print("");
+
     _refresh();
   }
 
   @override
   void dispose() {
     super.dispose();
+
+    //!AddCommon.calledDisposed ? AdmobAd().disposeBannerAd() : print("");
   }
 
   void _refresh() async {

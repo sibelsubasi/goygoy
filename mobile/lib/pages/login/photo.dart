@@ -6,6 +6,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
+import 'package:mobile/commons/addCommons.dart';
 import 'package:mobile/commons/config.dart';
 import 'package:mobile/utils/fcm.dart';
 import 'package:mobile/widgets/widgets.dart';
@@ -42,13 +43,15 @@ class _PhotoUploadPageState extends State<PhotoUploadPage> {
     Analytics.logPageShow(widget.screenName);
 
     FCM().register(context);
+
     _refresh();
   }
 
   @override
   void dispose() {
 
-    AdmobAd().disposeInterstitialAd();
+    //!AddCommon.calledDisposed ? AdmobAd().disposeBannerAd() : print("");
+    //AdmobAd().disposeInterstitialAd();
     super.dispose();
   }
 
@@ -57,12 +60,25 @@ class _PhotoUploadPageState extends State<PhotoUploadPage> {
     try {
       setState(() => _isLoading = true);
 
+      //AdmobAd().showBannerAd().catchError(() => print('Error loading banner add'));
+      AdmobAd().showBannerAd().whenComplete(() => setState(() => _isLoading = false));
+      AddCommon.isAdShown = true;
+      AddCommon.calledDisposed = true;
+      /*
+      if (AddCommon.isAdShown) {
+        AdmobAd().disposeBannerAd();
+        AddCommon.isAdShown = false;
+        AddCommon.calledDisposed = true;
+      }
+      */
+
         //imageCache.clear();
 
       setState(() => _isLoading = false);
 
     } catch (e) {
       //showErrorSheet(context: context, error: e);
+      setState(() => _isLoading = false);
     }
   }
 
@@ -71,16 +87,19 @@ class _PhotoUploadPageState extends State<PhotoUploadPage> {
     File croppedFile;
     if (image.path != null) {
       croppedFile = await ImageCropper.cropImage(
-        //androidUiSettings: AndroidUiSettings(toolbarTitle: "Ölçekleyin",toolbarColor: Config.COLOR_GRADIENT_BEGIN,toolbarWidgetColor: Colors.white),
         toolbarTitle: "Düzenleyin",
         toolbarColor: Config.COLOR_GRADIENT_BEGIN,
         toolbarWidgetColor: Colors.white,
-        sourcePath: image.path,
+        maxWidth: 680,
+        maxHeight: 680,
         //aspectRatio: CropAspectRatio(ratioX: 3.0, ratioY: 3.0),
-        maxWidth: 512,
-        maxHeight: 512,
-        //iosUiSettings: IOSUiSettings(doneButtonTitle: "Tamam", cancelButtonTitle: "İptal"),
-        //compressQuality: 100,
+        sourcePath: image.path,
+
+        /**cropStyle: CropStyle.rectangle,
+        compressFormat: ImageCompressFormat.jpg,
+        compressQuality: 100,
+        androidUiSettings: AndroidUiSettings(toolbarTitle: "Düzenleyin", toolbarColor: Config.COLOR_GRADIENT_BEGIN, toolbarWidgetColor: Colors.white),
+        iosUiSettings: IOSUiSettings(doneButtonTitle: "Tamam", cancelButtonTitle: "Vazgeç"),**/
       );
     } else {
       croppedFile = image;
@@ -138,7 +157,7 @@ class _PhotoUploadPageState extends State<PhotoUploadPage> {
     if (!granted) {
       return null;
     }
-    var image = await ImagePicker.pickImage(source: ImageSource.gallery);
+    var image = await ImagePicker.pickImage(source: ImageSource.gallery, imageQuality: 95);
     if (image != null) {
       _imageChanged = true;
 
@@ -166,8 +185,8 @@ class _PhotoUploadPageState extends State<PhotoUploadPage> {
       var _imageDimension = await decodeImageFromList(f.readAsBytesSync());
       setState(() {
         _loadedImage = f;
-        _imageWidth = _imageDimension.width.toDouble() / 2.2;
-        _imageHeight = _imageDimension.height.toDouble() / 2.2;
+        _imageWidth = _imageDimension.width.toDouble() / 3.2;
+        _imageHeight = _imageDimension.height.toDouble() / 3.2;
       });
     }
     setState(() =>_isLoading = false );
@@ -396,7 +415,9 @@ class _PhotoUploadPageState extends State<PhotoUploadPage> {
                                     child: Text("Devam Et", style: AppTheme.textButtonPositive()),
                                     onPressed: () {
                                       AdmobAd().showInterstitialAd();
-                                      AdmobAd().isAdLoaded ? _uploadAndPushToEditPage() : _uploadAndPushToEditPage(); //print("waiting...");
+                                      Future.delayed(Duration(milliseconds: 500,)).then((_) {
+                                        AdmobAd().isAdLoaded ? _uploadAndPushToEditPage() : _uploadAndPushToEditPage();
+                                      });
 
                                     },
                                   ),

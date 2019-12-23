@@ -9,6 +9,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:mobile/commons/addCommons.dart';
 import 'package:mobile/commons/config.dart';
 import 'package:mobile/widgets/widgets.dart';
 import 'package:mobile/themes/theme.dart';
@@ -16,6 +17,7 @@ import 'package:mobile/commons/analytics.dart';
 import 'package:mobile/widgets/dialogs.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:share_extend/share_extend.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 
 class PositionTab extends StatefulWidget {
@@ -119,7 +121,7 @@ class PositionTabState extends State<PositionTab> with SingleTickerProviderState
   void dispose() {
     _controller.dispose();
 
-    AdmobAd().disposeInterstitialAd();
+    //AdmobAd().disposeInterstitialAd();
     super.dispose();
   }
 
@@ -143,6 +145,18 @@ class PositionTabState extends State<PositionTab> with SingleTickerProviderState
 
       height = MediaQuery.of(context).size.height - 170; //170 is total padding height
       width = MediaQuery.of(context).size.width - 10; //48 is total padding width
+
+
+      /**
+      SharedPreferences sf = await SharedPreferences.getInstance();
+      if( sf.getBool(Config.KEY_SHOW_INFO_FIRST) == null && _wgPreparedBubble != null)
+        if(_wgPreparedBubble.length == 1)
+          sf.setBool(Config.KEY_SHOW_INFO_FIRST, true);
+      Future.delayed(Duration(seconds: 1)).then((_) {
+        Dialogs.alert(context, "Hey!", "Baloncuk silmek istersen baloncuğun üstüne dokun ve çarpıya bas!");
+      });
+          **/
+
 
     } catch (e) {
       showErrorSheet(context: context, error: e);
@@ -399,7 +413,13 @@ class PositionTabState extends State<PositionTab> with SingleTickerProviderState
                     flex: 1,
                     child: Navigator.of(context).canPop()
                         ? PlatformIconButton(
-                      onPressed: () => Navigator.of(context).pop(),
+                      onPressed: () {
+                        AddCommon.isAdShown = true;
+                        AddCommon.calledDisposed = false;
+                        AdmobAd().showBannerAd();
+
+                        Navigator.of(context).pop(true);
+                      },
                       androidIcon: Icon(Icons.arrow_back, color: Config.COLOR_MID_GRAY, size: 28,),
                       iosIcon: Icon(CupertinoIcons.back, color: Config.COLOR_MID_GRAY),
                     )
@@ -449,7 +469,7 @@ class PositionTabState extends State<PositionTab> with SingleTickerProviderState
 
 
                   SizedBox(
-                    height: _imageWidth >= _imageHeight ? _imageHeight / 1.42 : _imageHeight / 1.06,
+                    height: _imageWidth >= _imageHeight ? _imageHeight / 1.82 : _imageHeight / 1.46,
                     width: _imageWidth,
                     child: Container(
                       decoration: BoxDecoration(
@@ -476,7 +496,7 @@ class PositionTabState extends State<PositionTab> with SingleTickerProviderState
 
                         WaterMark(
                           rotate: 3,
-                          height: _imageWidth >= _imageHeight ? _imageHeight / 1.42 : _imageHeight / 1.06,
+                          height: _imageWidth >= _imageHeight ? _imageHeight / 1.82 : _imageHeight / 1.46,
                           width: _imageWidth,
                           alignment: Alignment.bottomRight,
                         ),
@@ -495,7 +515,6 @@ class PositionTabState extends State<PositionTab> with SingleTickerProviderState
                 ),
               ),
             ),
-
 
             _isLoading || _loadedImage == null ? Dialogs.aotIndicator(context) : Container(),
           ],
