@@ -15,7 +15,7 @@ class WaterMark extends StatelessWidget {
       width: width,
       height: height,
       child: Opacity(
-        opacity: 0.4,
+        opacity: 0.6,
         child: Container(
           padding: EdgeInsets.all(18.0),
           //color: Colors.red,
@@ -32,8 +32,8 @@ class WaterMark extends StatelessWidget {
                   fontWeight: FontWeight.bold,
                   shadows: [
                     Shadow(
-                      blurRadius: 3.0,
-                      color: Colors.orange,
+                      blurRadius: 2.0,
+                      color: Colors.black,
                       offset: Offset(1.0, 1.0),
                     ),
                   ],

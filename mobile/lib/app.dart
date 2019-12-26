@@ -15,7 +15,6 @@ import 'package:firebase_analytics/observer.dart';
 import 'package:firebase_performance/firebase_performance.dart';
 import 'package:mobile/commons/analytics.dart';
 import 'package:package_info/package_info.dart';
-import 'package:mobile/pages/etc/unknown_route.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:unique_identifier/unique_identifier.dart';
 
@@ -73,12 +72,6 @@ class AOTMobileApp extends StatelessWidget {
         TurkishCupertinoLocalizations.delegate,
       ],
       //routes: ROUTES
-      onUnknownRoute: (RouteSettings setting) {
-        String unknownRoute = setting.name;
-        return platformPageRoute(builder: (BuildContext context) {
-          return UnknownPage(routePath: setting.name);
-        });
-      },
       onGenerateRoute: (RouteSettings settings) {
         if (Config.DEBUG) {
           print("Generating Platform Named Route: ${settings.name} with arguments: ${settings.arguments.toString()}");

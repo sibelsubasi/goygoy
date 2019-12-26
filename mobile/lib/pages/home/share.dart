@@ -91,7 +91,7 @@ class _SharePageState extends State<SharePage> {
                 child: ListView(
                     physics: ScrollPhysics(),
                       children: <Widget>[
-                        _capturedImageFile == null ? Center(child: Text("Paylaşılacak görüntü oluşturulamadı..")):Container(),
+                        _capturedImageFile == null ? Center(child: Text("Could not create image to share :(")):Container(),
                         Container(
 
                           decoration: BoxDecoration(

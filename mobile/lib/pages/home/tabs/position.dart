@@ -9,7 +9,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:mobile/commons/addCommons.dart';
+import 'package:mobile/commons/adsCommons.dart';
 import 'package:mobile/commons/config.dart';
 import 'package:mobile/widgets/widgets.dart';
 import 'package:mobile/themes/theme.dart';
@@ -48,6 +48,7 @@ class PositionTabState extends State<PositionTab> with SingleTickerProviderState
   double _imageHeight = 32;
   List<Offset> position = [];
   List<bool> _isDeleteBtnEnabled = [];
+  bool _isShareBtnPressed = false;
   Size _sizeOfContainer;
 
   File _capturedImage;
@@ -274,24 +275,24 @@ class PositionTabState extends State<PositionTab> with SingleTickerProviderState
       barrierDismissible: false,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text('Uyarı'),
+          title: Text('Warning'),
           content: SingleChildScrollView(
             child: ListBody(
               children: <Widget>[
-                Text('Bunu silmek istediğinize '),
-                Text('emin misiniz?'),
+                Text('Are you sure '),
+                Text('you want to delete this?'),
               ],
             ),
           ),
           actions: <Widget>[
             FlatButton(
-              child: Text('Vazgeç'),
+              child: Text('Cancel'),
               onPressed: () {
                 Navigator.of(context).pop();
               },
             ),
             FlatButton(
-              child: Text('Evet'),
+              child: Text('Yes!'),
               onPressed: () {
                 deleteSelectedBubble(index);
                 Navigator.of(context).pop();
@@ -326,6 +327,7 @@ class PositionTabState extends State<PositionTab> with SingleTickerProviderState
             onTap: () =>
                 setState(()
                 {
+                  _isShareBtnPressed = false;
                   _isDeleteBtnEnabled[i] = !_isDeleteBtnEnabled[i];
                   print(_isDeleteBtnEnabled[i]);
                 }),
@@ -357,7 +359,7 @@ class PositionTabState extends State<PositionTab> with SingleTickerProviderState
                         return ScaleTransition(child: child, scale: animation);
                       },
                       child:
-                        _isDeleteBtnEnabled[i]?
+                        _isDeleteBtnEnabled[i] && !_isShareBtnPressed?
                         GestureDetector(
                             onTap: () {
                               showConfirm(i);
@@ -414,8 +416,8 @@ class PositionTabState extends State<PositionTab> with SingleTickerProviderState
                     child: Navigator.of(context).canPop()
                         ? PlatformIconButton(
                       onPressed: () {
-                        AddCommon.isAdShown = true;
-                        AddCommon.calledDisposed = false;
+                        AdsCommon.isAdShown = true;
+                        AdsCommon.calledDisposed = false;
                         AdmobAd().showBannerAd();
 
                         Navigator.of(context).pop(true);
@@ -440,14 +442,19 @@ class PositionTabState extends State<PositionTab> with SingleTickerProviderState
                             mainAxisAlignment: MainAxisAlignment.center,
                             crossAxisAlignment: CrossAxisAlignment.center,
                             children: [
-                              Text("Paylaş ", style: AppTheme.textButtonPositive()),
+                              Text("Share ", style: AppTheme.textButtonPositive()),
                               Icon(FontAwesomeIcons.instagram, color: Config.COLOR_WHITE, size: 16),
                             ]
                         ),
                         onPressed: () {
                           AdmobAd().showInterstitialAd();
                           //AdmobAd().isAdLoaded ? _captureAndPushToSharePage() : _captureAndPushToSharePage(); //print("waiting...");
-                          _captureAndPushToSharePage();
+
+                          setState(() {
+                            _isShareBtnPressed = true;
+                            _captureAndPushToSharePage();
+                          });
+
                         }
                       ),
                     ),

@@ -1,11 +1,11 @@
 import 'dart:io';
 import 'package:firebase_admob/firebase_admob.dart';
-import 'package:mobile/commons/addCommons.dart';
+import 'package:mobile/commons/adsCommons.dart';
 
 
 class AdmobAd {
 
-    static const bool TEST_MODE = true; /* TODO: False on prod!!! */
+    static const bool TEST_MODE = false; /* TODO: False on prod!!! */
 
     static const List<String> ADMOB_TESTDEVICES = ['B713C0E2C99277356B96BD5D55D4BB87']; //5f1f2d8b91097b02
     static const List<String> ADMOB_KEYWORDS = ['picture', 'speech', 'bubble', 'editor'];
@@ -51,9 +51,9 @@ class AdmobAd {
 
             try {
               if (event == MobileAdEvent.loaded) {
-                AddCommon.isAdShown = true;
+                AdsCommon.isAdShown = true;
               } else if (event == MobileAdEvent.failedToLoad) {
-                AddCommon.isAdShown = false;
+                AdsCommon.isAdShown = false;
               }
             } on Exception catch (error) {
               print('BANNER HATA!, ${error.toString()}');

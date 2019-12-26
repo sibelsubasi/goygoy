@@ -1,5 +1,3 @@
-// (C) 2019 Haziran Yazılım. All rights reserved.
-// Proprietary License.
 
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_analytics/observer.dart';
@@ -28,7 +26,7 @@ abstract class Analytics {
   static void logPageShow(String screenName, {String screenClassOverride}) async {
     await _analytics.setCurrentScreen(
       screenName: screenName,
-      screenClassOverride: screenClassOverride ?? "Partnera",
+      screenClassOverride: screenClassOverride ?? "GoyGoy",
     );
   }
 

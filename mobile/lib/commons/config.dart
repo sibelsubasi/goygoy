@@ -1,5 +1,4 @@
-// (C) 2019 Haziran Yazılım. All rights reserved.
-// Proprietary License.
+
 
 import 'package:flutter/material.dart';
 import 'dart:io' show Platform;
@@ -9,7 +8,7 @@ import 'package:flutter/services.dart';
 class Config {
   Config._();
 
-  static const bool FORCED_TEST_PACKAGE  = true; // WATCH OUT!!!! DO NOT True this on production
+  static const bool FORCED_TEST_PACKAGE  = false; // WATCH OUT!!!! DO NOT True this on production
 
 
   static bool IS_TEST_PACKAGE  = false;
@@ -32,7 +31,6 @@ class Config {
 
   // static String DEF_PREF_LOOK_AND_FEEL = 'ios';
   static String DEF_PREF_LOOK_AND_FEEL = null; // @TODO: Change it <null> before release, IN development give what you want.
-  static const List<String> DEF_PREF_SHORTCUTS = ['absence', 'expense', 'lunch'];
 
   /* -----------  COLORS ------------------ */
 
@@ -66,33 +64,13 @@ class Config {
   static const Color COLOR_DEACTIVE_GRAY = Color(0xFFBBBBBB);
   static const Color COLOR_VALIDATION_ERROR = Color(0xFFD32F2F); //Colors.red[700];
 
-  /* -----------  WS ------------------ */
-  static const String WS_END_POINT_URL_PROD = "https://erpapimw.yurticikargo.com/erp/";
-  static const String WS_END_POINT_URL_TEST = "https://erpapimwtest.yurticikargo.com/erp/";
-  static const String WS_PORTAL_END_POINT_URL_PROD = "https://mobilehrcms.yurticikargo.com/rest/";
-  static const String WS_PORTAL_END_POINT_URL_TEST = "https://mobilehrcmstest.yurticikargo.com/rest/";
 
-
-  static String WS_END_POINT_URL = WS_END_POINT_URL_PROD;
-  static String WS_PORTAL_END_POINT_URL = WS_PORTAL_END_POINT_URL_PROD;
-
-
-  static const String STORE_FRONT_URL = "https://store.yurticikargo.com"; //"http://store.partnera.com.tr/";
-  static const String WS_PORTAL_API_USERNAME = "DataIntegrationService";
-  static const String WS_PORTAL_API_PASSWORD = "welcome1";
   static const int WS_HTTP_TIME_OUT = 30; //20 secs
   static const bool WS_WORK_WITH_MOCK = false;
-  static const int API_VERSION = 1;
-  static final String WS_USER_AGENT = "Partnera-Shell/1.0: (${Platform.operatingSystem}, V: ${Platform.version})/${Platform.localeName}";
   static const int REQUEST_TOKEN_ON_LOGIN_SHOW_PROGRESS_NOTIFICATION_AFTER = 3; // 3 secs
   static const int REQUEST_TOKEN_ON_LOGIN_TIME_OUT = 10; // 10 secs
   static const int CHECK_FOR_UPDATE_ON_LOGIN_TIME_OUT = 5; // 5 secs
 
-  static const bool ANNOUNCEMENT_DOES_NOT_SHOW_THE_SAME_POPUP_MORE_THEN_ONCE = true;
-
-
-  /* -----------  PATH ------------------ */
-  static const String PATH_USER_IMG = "user.jpg";
 
   /* -----------  Behaviour  ------------------ */
   static const int BEHAVIOUR_SEARCH_HISTORY_COUNT = 5;

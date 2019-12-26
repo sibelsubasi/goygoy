@@ -6,7 +6,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
-import 'package:mobile/commons/addCommons.dart';
+import 'package:mobile/commons/adsCommons.dart';
 import 'package:mobile/commons/config.dart';
 import 'package:mobile/utils/fcm.dart';
 import 'package:mobile/widgets/widgets.dart';
@@ -62,8 +62,8 @@ class _PhotoUploadPageState extends State<PhotoUploadPage> {
 
       //AdmobAd().showBannerAd().catchError(() => print('Error loading banner add'));
       AdmobAd().showBannerAd().whenComplete(() => setState(() => _isLoading = false));
-      AddCommon.isAdShown = true;
-      AddCommon.calledDisposed = true;
+      AdsCommon.isAdShown = true;
+      AdsCommon.calledDisposed = true;
       /*
       if (AddCommon.isAdShown) {
         AdmobAd().disposeBannerAd();
@@ -87,7 +87,7 @@ class _PhotoUploadPageState extends State<PhotoUploadPage> {
     File croppedFile;
     if (image.path != null) {
       croppedFile = await ImageCropper.cropImage(
-        toolbarTitle: "Düzenleyin",
+        toolbarTitle: "Edit Photo",
         toolbarColor: Config.COLOR_GRADIENT_BEGIN,
         toolbarWidgetColor: Colors.white,
         maxWidth: 680,
@@ -114,7 +114,7 @@ class _PhotoUploadPageState extends State<PhotoUploadPage> {
     if (!granted) {
       if (await PermissionOperations.isBlocked(PermissionName.Camera)) {
         //print('isBlocked true');
-        await Dialogs.alert(context, "İzin", "Lütfen ayarlardan kamera erişimine izin verin");
+        await Dialogs.alert(context, "Permission", "Please allow camera access from settings.");
         if (await PermissionOperations.checkAndOpenSettings(PermissionName.Camera)) {
           //print('checkAndOpenSettingas');
         }
@@ -145,7 +145,7 @@ class _PhotoUploadPageState extends State<PhotoUploadPage> {
     if (!granted) {
       if (await PermissionOperations.isBlocked(PermissionName.Storage)) {
         print('isBlocked true');
-        await Dialogs.alert(context, "İzin", "Lütfen ayarlardan depolama erişimine izin verin");
+        await Dialogs.alert(context, "Permission", "Please allow storage access from settings.");
         if (await PermissionOperations.checkAndOpenSettings(PermissionName.Storage)) {
           //print('checkAndOpenSettingas');
         }
@@ -240,18 +240,18 @@ class _PhotoUploadPageState extends State<PhotoUploadPage> {
       barrierDismissible: false,
       builder: (BuildContext context) {
         return PlatformAlertDialog(
-          title: Text("Uyarı"),
-          content: Text("Uygulamadan ayrılmak istediğinize emin misiniz?"),
+          title: Text("Warning"),
+          content: Text("Are you sure you want to leave the application?"),
           actions: <Widget>[
             // usually buttons at the bottom of the dialog
             PlatformDialogAction(
-              child: Text("Vazgeç"),
+              child: Text("Cancel"),
               onPressed: () {
                 Navigator.of(context).pop(false);
               },
             ),
             PlatformDialogAction(
-              child: Text("Evet"),
+              child: Text("Yes!"),
               onPressed: () {
                 Navigator.of(context).pop(true);
               },
@@ -295,7 +295,7 @@ class _PhotoUploadPageState extends State<PhotoUploadPage> {
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: <Widget>[
-                                Text("Fotoğraf Yükle", style: AppTheme.textPageTitleDarkStyle()),
+                                Text("Photo Upload", style: AppTheme.textPageTitleDarkStyle()),
                               ],
                             ),
                           ),
@@ -315,18 +315,18 @@ class _PhotoUploadPageState extends State<PhotoUploadPage> {
                                       ? showCupertinoModalPopup(
                                           context: context,
                                           builder: (BuildContext context) => CupertinoActionSheet(
-                                                title: Text('Seçiniz', style: AppTheme.textModalItem()),
+                                                title: Text('Selection:', style: AppTheme.textModalItem()),
                                                 //message: const Text('Your options are'),
                                                 actions: <Widget>[
                                                   CupertinoActionSheetAction(
-                                                    child: Text('Galeriden', style: AppTheme.textBodyDarkGrayBold()),
+                                                    child: Text('From Gallery', style: AppTheme.textBodyDarkGrayBold()),
                                                     onPressed: () {
                                                       _vision('g');
                                                       Navigator.of(context).pop();
                                                     },
                                                   ),
                                                   CupertinoActionSheetAction(
-                                                    child: Text('Kameradan', style: AppTheme.textBodyDarkGrayBold()),
+                                                    child: Text('From Camera', style: AppTheme.textBodyDarkGrayBold()),
                                                     onPressed: () {
                                                       _vision('c');
                                                       Navigator.of(context).pop();
@@ -334,7 +334,7 @@ class _PhotoUploadPageState extends State<PhotoUploadPage> {
                                                   )
                                                 ],
                                                 cancelButton: CupertinoActionSheetAction(
-                                                  child: Text('İptal', style: AppTheme.textBodyLight()),
+                                                  child: Text('Cancel', style: AppTheme.textBodyLight()),
                                                   isDefaultAction: true,
                                                   onPressed: () {
                                                     Navigator.of(context).pop();
@@ -363,18 +363,18 @@ class _PhotoUploadPageState extends State<PhotoUploadPage> {
                                               showCupertinoModalPopup(
                                                 context: context,
                                                 builder: (BuildContext context) => CupertinoActionSheet(
-                                                      title: Text('Seçiniz', style: AppTheme.textModalItem()),
+                                                      title: Text('Selection:', style: AppTheme.textModalItem()),
                                                       //message: const Text('Your options are'),
                                                       actions: <Widget>[
                                                         CupertinoActionSheetAction(
-                                                          child: Text('Galeriden', style: AppTheme.textBodyDarkGrayBold(),),
+                                                          child: Text('From Gallery', style: AppTheme.textBodyDarkGrayBold(),),
                                                           onPressed: () {
                                                             _vision('g');
                                                             Navigator.of(context).pop();
                                                           },
                                                         ),
                                                         CupertinoActionSheetAction(
-                                                          child: Text('Kameradan', style: AppTheme.textBodyDarkGrayBold()),
+                                                          child: Text('From Camera', style: AppTheme.textBodyDarkGrayBold()),
                                                           onPressed: () {
                                                             _vision('c');
                                                             Navigator.of(context).pop();
@@ -382,7 +382,7 @@ class _PhotoUploadPageState extends State<PhotoUploadPage> {
                                                         )
                                                       ],
                                                       cancelButton: CupertinoActionSheetAction(
-                                                        child: Text('İptal', style: AppTheme.textBodyLight()),
+                                                        child: Text('Cancel', style: AppTheme.textBodyLight()),
                                                         isDefaultAction: true,
                                                         onPressed: () {
                                                           Navigator.of(context).pop();
@@ -397,8 +397,8 @@ class _PhotoUploadPageState extends State<PhotoUploadPage> {
                                 ),
                                 SizedBox(height: 20),
                                 _loadedImage == null
-                                    ? Text("Fotoğraf yüklemek için artıya basın", style: AppTheme.textHint())
-                                    : Text("Değiştirmek için fotoğrafın üstüne basın.", style: AppTheme.textHint()),
+                                    ? Text("Press the plus icon to upload photo.", style: AppTheme.textHint())
+                                    : Text("Tap on the photo to change.", style: AppTheme.textHint()),
                                 SizedBox(height: 10),
                               ],
                             )
@@ -412,7 +412,7 @@ class _PhotoUploadPageState extends State<PhotoUploadPage> {
                               children: <Widget>[
                                 Expanded(
                                   child: PositiveActionButton(
-                                    child: Text("Devam Et", style: AppTheme.textButtonPositive()),
+                                    child: Text("Let's go on!", style: AppTheme.textButtonPositive()),
                                     onPressed: () {
                                       AdmobAd().showInterstitialAd();
                                       Future.delayed(Duration(milliseconds: 500,)).then((_) {

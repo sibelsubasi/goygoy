@@ -6,7 +6,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
-import 'package:mobile/commons/addCommons.dart';
+import 'package:mobile/commons/adsCommons.dart';
 import 'package:mobile/commons/config.dart';
 import 'package:mobile/pages/home/tabs/bubble.dart';
 import 'package:mobile/pages/home/tabs/position.dart';
@@ -51,12 +51,12 @@ class _EditPageState extends State<EditPage> {
     print("widget.loadedImageFile: ${widget.loadedImageFile}");
     print("widget.preparedBubble List: ${widget.preparedBubble}");
 
-    if (!AddCommon.isAdShown && AddCommon.calledDisposed) {
-      AddCommon.isAdShown = true;
-      AddCommon.calledDisposed = false;
+    if (!AdsCommon.isAdShown && AdsCommon.calledDisposed) {
+      AdsCommon.isAdShown = true;
+      AdsCommon.calledDisposed = false;
     }
 
-    !AddCommon.calledDisposed ? AdmobAd().disposeBannerAd() : print("");
+    !AdsCommon.calledDisposed ? AdmobAd().disposeBannerAd() : print("");
 
     _refresh();
   }
@@ -94,12 +94,12 @@ class _EditPageState extends State<EditPage> {
         currentIndex: _currentTabIndex,
         items: [
           BottomNavigationBarItem(
-            title: Text("Yerleştir", style: _currentTabIndex == 0 ? AppTheme.textTabActive() : AppTheme.textTabPassive()),
+            title: Text("Place Bubbles!", style: _currentTabIndex == 0 ? AppTheme.textTabActive() : AppTheme.textTabPassive()),
             activeIcon: Image.asset("assets/img/activeEdit.png"),
             icon: Image.asset("assets/img/passiveEdit.png"),
           ),
           BottomNavigationBarItem(
-            title: Text("Baloncuk Ekle", style: _currentTabIndex == 1 ? AppTheme.textTabActive() : AppTheme.textTabPassive()),
+            title: Text("Create Bubble!", style: _currentTabIndex == 1 ? AppTheme.textTabActive() : AppTheme.textTabPassive()),
             activeIcon: Image.asset("assets/img/activeBubble.png"),
             icon: Image.asset("assets/img/passiveBubble.png"),
           ),

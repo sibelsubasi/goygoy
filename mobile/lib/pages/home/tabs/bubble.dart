@@ -74,7 +74,7 @@ class BubbleTabState extends State<BubbleTab> {
               )));
 
     }else{
-      showErrorSheet(context: context, error: "Alanları boş bırakmayınız.");
+      showErrorSheet(context: context, error: "Do not leave fields blank.");
     }
   }
 
@@ -131,7 +131,7 @@ class BubbleTabState extends State<BubbleTab> {
                       CrossAxisAlignment.start,
                       children: <Widget>[
                         RoundedTextField(
-                          labelText: "Yazı Alanı",
+                          labelText: "Speech Field",
                           initialValue: null,
                           validator: (e) => Validator().required().validate(e),
                           onSaved: (e) => setState(() => _description = e),
@@ -161,8 +161,8 @@ class BubbleTabState extends State<BubbleTab> {
                           onChanged: _handleSelectedBubble,
                         ),
                         _selectedBubble == false
-                            ? Text("Sol Baloncuk", style: AppTheme.textListDefaultBody(),)
-                            : Text("Sol Baloncuk", style: AppTheme.textListDefaultSubBody(),),
+                            ? Text("Left Bubble", style: AppTheme.textListDefaultBody(),)
+                            : Text("Left Bubble", style: AppTheme.textListDefaultSubBody(),),
                       ],
                     ),
                   ),
@@ -178,8 +178,8 @@ class BubbleTabState extends State<BubbleTab> {
                           onChanged: _handleSelectedBubble,
                         ),
                         _selectedBubble == true
-                            ? Text("Sağ Baloncuk", style: AppTheme.textListDefaultBody(),)
-                            : Text("Sağ Baloncuk", style: AppTheme.textListDefaultSubBody(),),
+                            ? Text("Right Bubble", style: AppTheme.textListDefaultBody(),)
+                            : Text("Right Bubble", style: AppTheme.textListDefaultSubBody(),),
 
                       ],
                     ),
@@ -198,7 +198,7 @@ class BubbleTabState extends State<BubbleTab> {
                     flex: 2,
                     child: ActionButtonSmall(
                       buttonColor: Config.COLOR_ORANGE_DARK,
-                      child: Text("Ekle", style: AppTheme.textButtonPositive()),
+                      child: Text("Create", style: AppTheme.textButtonPositive()),
                       onPressed: () => _submit(),
                     ),
                   ),
@@ -230,7 +230,7 @@ class BubbleTabState extends State<BubbleTab> {
         child: Stack(
         children: <Widget>[
           GradientPageHeader(
-            title: "Baloncuk Ekle",
+            title: "Create Bubble",
           ),
           Container(
             color: Colors.white,

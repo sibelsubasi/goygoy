@@ -100,9 +100,9 @@ class _OnBoardPageSelector extends StatelessWidget {
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: <Widget>[
-                                  Text("Çok Kolay!", style: AppTheme.textHeaderStyle(),overflow: TextOverflow.ellipsis ,maxLines: 1),
+                                  Text("Very Easy!", style: AppTheme.textHeaderStyle(),overflow: TextOverflow.ellipsis ,maxLines: 1),
                                   SizedBox(height: 9),
-                                  Text("Sen sus hiçbir şey söyleme, \nSen sus fotoğrafların konuşsun :)", style: AppTheme.textMuted(),overflow: TextOverflow.ellipsis ,maxLines: 2),
+                                  Text("Let your pictures speak! \n..so enjoy with speech bubbles :)", style: AppTheme.textMuted(),overflow: TextOverflow.ellipsis ,maxLines: 2),
                                   SizedBox(height: 9),
                                 ],
                               ),
@@ -139,9 +139,9 @@ class _OnBoardPageSelector extends StatelessWidget {
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: <Widget>[
-                                  Text("Sürükle Bırak!", style: AppTheme.textHeaderStyle(),overflow: TextOverflow.ellipsis ,maxLines: 1),
+                                  Text("Drag and Drop!", style: AppTheme.textHeaderStyle(),overflow: TextOverflow.ellipsis ,maxLines: 1),
                                   SizedBox(height: 9),
-                                  Text("Konuşma balonlarını hazırla, \nİstediğin yere sürükleyerek konumlandır.", style: AppTheme.textMuted(),overflow: TextOverflow.ellipsis ,maxLines:2),
+                                  Text("Create your speech bubbles, \nAlso you can tap on bubbles then delete, \nFinally, place by dragging where you want.", style: AppTheme.textMuted(),overflow: TextOverflow.ellipsis ,maxLines:3),
                                   SizedBox(height: 9),
                                 ],
                               ),
@@ -178,9 +178,9 @@ class _OnBoardPageSelector extends StatelessWidget {
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: <Widget>[
-                                  Text("..ve Paylaş!", style: AppTheme.textHeaderStyle(),overflow: TextOverflow.ellipsis ,maxLines: 1),
+                                  Text("..and Share!", style: AppTheme.textHeaderStyle(),overflow: TextOverflow.ellipsis ,maxLines: 1),
                                   SizedBox(height: 9),
-                                  Text("Hazırladığın görüntüyü \nanında sosyal medyada paylaşabilirsin.", style: AppTheme.textMuted(),overflow: TextOverflow.ellipsis ,maxLines: 2),
+                                  Text("You can instantly share \nyour image created on social media.", style: AppTheme.textMuted(),overflow: TextOverflow.ellipsis ,maxLines: 2),
                                   SizedBox(height: 9),
                                 ],
                               ),
@@ -234,7 +234,7 @@ class _OnBoardPageSelector extends StatelessWidget {
                       Analytics.logTutorialComplete();
                       return Navigator.of(context).pushReplacementNamed("/login/photo");
                     },
-                    child: Text("Hemen Başla!", style: AppTheme.textButtonPositive()),
+                    child: Text("Let's Start!", style: AppTheme.textButtonPositive()),
                   ),
                 ),
               ],
