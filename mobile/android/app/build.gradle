@@ -92,19 +92,21 @@ dependencies {
     androidTestImplementation 'androidx.test:runner:1.1.2-alpha02'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0-alpha02'
     implementation 'com.google.firebase:firebase-analytics:16.0.2'
-    //api 'com.google.firebase:firebase-ml-vision-face-model:17.0.2'
-    //compile group: 'com.google.firebase', name: 'firebase-ml-vision-face-model', version: '17.0.2'
+    implementation 'com.google.firebase:firebase-ads:16.0.1'
 }
-//com.google.gms.googleservices.GoogleServicesPlugin.config.disableVersionCheck = true
 
-//// Include both 32bit and 64bit arm libflutter.so files into your APK
+
+com.google.gms.googleservices.GoogleServicesPlugin.config.disableVersionCheck = true
+
+// Include both 32bit and 64bit arm libflutter.so files into your APK
+
 //project.afterEvaluate {
 //    assembleRelease.doLast {
 //        String src
 //        if(project.hasProperty('target-platform') &&
 //                project.property('target-platform') == 'android-arm64') {
-//            // If we are building the 64bit then we also want to add the 32bit libflutter.so
-//            src = "$flutterRoot/bin/cache/artifacts/engine/android-arm-release/flutter.jar"
+//           // If we are building the 64bit then we also want to add the 32bit libflutter.so
+//           src = "$flutterRoot/bin/cache/artifacts/engine/android-arm-release/flutter.jar"
 //        }else{
 //            // If we are building the opposite (32bit), we include the 64bit libflutter.so
 //            src = "$flutterRoot/bin/cache/artifacts/engine/android-arm64-release/flutter.jar"

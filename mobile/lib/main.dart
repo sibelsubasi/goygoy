@@ -1,6 +1,8 @@
 // (C) 2019 Haziran Yazılım. All rights reserved.
 // Proprietary License.
 import 'dart:async';
+import 'dart:io';
+import 'package:firebase_admob/firebase_admob.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -29,6 +31,13 @@ void main() {
 
   runZoned<Future<Null>>(() async {
     SystemChrome.setPreferredOrientations(Config.SUPPORTED_SCREEN_ORIENTATIONS).then((_) {
+
+      /* GOOGLE ADMOB */
+      const String APP_ID_IOS = 'ca-app-pub-7026258186722315~8694725930'; // INTO Info.plist
+      const String APP_ID_ANDROID = 'ca-app-pub-7026258186722315~5508437197'; // INTO AndroidManifest
+      FirebaseAdMob.instance.initialize(appId: Platform.isAndroid ? APP_ID_ANDROID:APP_ID_IOS); //TODO ?????
+      /* End of Admob */
+
       runApp(AOTMobileApp());
     });
     // runApp(YKMobileHrApp());
