@@ -1,6 +1,6 @@
 name: mobile
-description: GoyGoy
-version: 1.0.0
+description: GoyGoy App For Speech Bubbles
+version: 1.0.3
 
 environment:
   sdk: ">=2.1.0 <3.0.0"
